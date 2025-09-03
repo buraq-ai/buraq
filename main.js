@@ -1,9 +1,9 @@
 /* main.js
-   - Global background fade: black → blue as you scroll.
-   - One-shot directional reveals (staggered, 3D, blur → sharp).
-   - Accordions.
-   - Smooth anchor scrolling.
-   - Contact form validation with Google reCAPTCHA v2 check.
+   - Background fade on scroll
+   - One-shot directional reveals
+   - Accordions
+   - Smooth anchor scrolling
+   - Contact form validation + Google reCAPTCHA + Firestore save
 */
 
 /* Helpers */
@@ -17,7 +17,6 @@ if (yr) yr.textContent = new Date().getFullYear();
 /* ================== BACKGROUND FADE (black → blue) ================== */
 (function bgFade(){
   const root = document.documentElement;
-
   function update() {
     const docH = Math.max(
       document.body.scrollHeight, document.documentElement.scrollHeight,
@@ -27,10 +26,9 @@ if (yr) yr.textContent = new Date().getFullYear();
     const vh = window.innerHeight || 1;
     const maxScrollable = Math.max(1, docH - vh);
     const y = window.scrollY || 0;
-    const p = Math.min(1, Math.max(0, y / maxScrollable)); // 0..1
+    const p = Math.min(1, Math.max(0, y / maxScrollable));
     root.style.setProperty('--bgp', p.toFixed(4));
   }
-
   let ticking = false;
   function onScrollOrResize(){
     if (!ticking) {
@@ -58,21 +56,15 @@ if (yr) yr.textContent = new Date().getFullYear();
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(el);
   });
-
-  groups.forEach(list=>{
-    list.forEach((el, i)=> el.__revealIndex = i);
-  });
+  groups.forEach(list=> list.forEach((el, i)=> el.__revealIndex = i));
 
   function inferDir(el){
     const attr = (el.getAttribute('data-dir')||'').toLowerCase();
     if (attr) return attr;
-
     if (el.closest('.chips')) return 'scale';
     if (el.closest('.accordions') || el.closest('.acc')) return 'right';
-
     const isHeading = el.matches('.title, .eyebrow, .lead, h1, h2, h3, h4, p.sub');
     if (isHeading) return 'up';
-
     const pillars = el.closest('.pillars, .pillars--two');
     if (pillars){
       const idx = (el.__revealIndex || 0);
@@ -82,7 +74,6 @@ if (yr) yr.textContent = new Date().getFullYear();
   }
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   const io = new IntersectionObserver((entries)=>{
     for (const e of entries) {
       if (!e.isIntersecting) continue;
@@ -95,12 +86,8 @@ if (yr) yr.textContent = new Date().getFullYear();
       }
 
       const dir = inferDir(el);
-      const idx = el.__revealIndex || 0;
       const baseDelay = parseInt(el.getAttribute('data-delay') || '0', 10) || 0;
-
-      const distance = 36;     // px
-      const blurStart = 8;     // px
-      const rot = 6;           // deg for left/right yaw
+      const distance = 36, blurStart = 8, rot = 6;
       let keyframes;
 
       switch (dir){
@@ -108,26 +95,22 @@ if (yr) yr.textContent = new Date().getFullYear();
           keyframes = [
             { opacity:0, transform:`translateX(${-distance}px) rotateY(${rot}deg) translateZ(0)`, filter:`blur(${blurStart}px) saturate(.9)` },
             { opacity:1, transform:`translateX(0) rotateY(0deg) translateZ(0)`,                   filter:'blur(0) saturate(1)' }
-          ];
-          break;
+          ]; break;
         case 'right':
           keyframes = [
             { opacity:0, transform:`translateX(${distance}px) rotateY(${-rot}deg) translateZ(0)`, filter:`blur(${blurStart}px) saturate(.9)` },
             { opacity:1, transform:`translateX(0) rotateY(0deg) translateZ(0)`,                   filter:'blur(0) saturate(1)' }
-          ];
-          break;
+          ]; break;
         case 'down':
           keyframes = [
             { opacity:0, transform:`translateY(${-distance}px) translateZ(0)`, filter:`blur(${blurStart}px) saturate(.9)` },
             { opacity:1, transform:`translateY(0) translateZ(0)`,              filter:'blur(0) saturate(1)' }
-          ];
-          break;
+          ]; break;
         case 'scale':
           keyframes = [
             { opacity:0, transform:'scale(.92) translateZ(0)', filter:`blur(${blurStart}px) saturate(.9)` },
             { opacity:1, transform:'scale(1) translateZ(0)',   filter:'blur(0) saturate(1)' }
-          ];
-          break;
+          ]; break;
         case 'up':
         default:
           keyframes = [
@@ -137,16 +120,12 @@ if (yr) yr.textContent = new Date().getFullYear();
       }
 
       const group = groups.get(groupKey(el)) || [el];
-      const stagger = 80; // ms
+      const stagger = 80;
       const delay = baseDelay + (group.indexOf(el) * stagger);
 
       const anim = el.animate(keyframes, {
-        duration: 820,
-        easing: 'cubic-bezier(.18,.7,.13,1)',
-        delay,
-        fill: 'forwards'
+        duration: 820, easing: 'cubic-bezier(.18,.7,.13,1)', delay, fill: 'forwards'
       });
-
       anim.addEventListener('finish', ()=> el.classList.add('revealed'));
     }
   }, { threshold: 0.22 });
@@ -180,11 +159,13 @@ $$('a[href^="#"]').forEach(a=>{
   });
 });
 
-/* ================== Contact form (with Google reCAPTCHA) ================== */
+/* ================== Contact form (with Firebase + reCAPTCHA) ================== */
 (function formHandler(){
   const form = $('#inqForm');
   if (!form) return;
   const msgEl = $('#formMsg');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
   const setMsg = (type, text) => {
     if (!msgEl) return;
     msgEl.textContent = text || '';
@@ -192,7 +173,7 @@ $$('a[href^="#"]').forEach(a=>{
     if (type) msgEl.classList.add(type === 'error' ? 'is-error' : 'is-success');
   };
 
-  form.addEventListener('submit', (e)=>{
+  form.addEventListener('submit', async (e)=>{
     e.preventDefault();
     setMsg('', '');
 
@@ -205,7 +186,7 @@ $$('a[href^="#"]').forEach(a=>{
       return;
     }
 
-    // reCAPTCHA presence & response
+    // reCAPTCHA
     if (typeof grecaptcha === 'undefined') {
       setMsg('error', 'reCAPTCHA failed to load. Please refresh and try again.');
       return;
@@ -216,17 +197,35 @@ $$('a[href^="#"]').forEach(a=>{
       return;
     }
 
-    // TODO: send `data` + `captchaResponse` to your backend for verification
-    // Example:
-    // fetch('/submit', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ ...data, captchaResponse })
-    // }).then(...)
+    submitBtn?.setAttribute('disabled', 'disabled');
+    setMsg('', 'Sending…');
 
-    // Front-end demo success
-    setMsg('success', 'Thanks! Your inquiry has been recorded.');
-    form.reset();
-    grecaptcha.reset(); // reset captcha for next submit
+    try {
+      if (typeof window.saveInquiry !== 'function') {
+        throw new Error('Firebase not loaded (saveInquiry missing). Check script order.');
+      }
+
+      const payload = {
+        firstName: data.firstName,
+        lastName:  data.lastName,
+        email:     data.email,
+        org:       data.org,
+        title:     data.title || '',
+        country:   data.country,
+        notes:     data.notes,
+        recaptcha: captchaResponse   // NOTE: verify on server for production
+      };
+
+      const res = await window.saveInquiry(payload);
+      if (!res?.ok) throw new Error(res?.error || 'Unknown error');
+
+      setMsg('success', 'Thanks! Your inquiry has been recorded.');
+      form.reset();
+      grecaptcha.reset();
+    } catch (err) {
+      setMsg('error', `Submission failed: ${err.message || err}`);
+    } finally {
+      submitBtn?.removeAttribute('disabled');
+    }
   });
 })();

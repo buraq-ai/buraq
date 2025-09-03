@@ -204,7 +204,7 @@
           <label class="field field--full" data-reveal><span>Tell us challenges, project timing, and plans for using Buraq AI*</span><textarea name="notes" rows="5" required></textarea></label>
         </div>
 
-        <!-- Google reCAPTCHA widget -->
+        <!-- Google reCAPTCHA v2 checkbox -->
         <div class="g-recaptcha" data-sitekey="6Lf8SLwrAAAAADyqwKLrfs-_4kFu053sjEtz3N6_" data-theme="dark"></div>
 
         <div class="form__actions" data-reveal>
@@ -227,8 +227,9 @@
     </footer>
   </main>
 
-  <!-- Google reCAPTCHA API (must be before main.js so grecaptcha exists) -->
+  <!-- Scripts: reCAPTCHA → Firebase (module) → main -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script type="module" src="firebase-init.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
