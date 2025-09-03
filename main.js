@@ -4,6 +4,7 @@
    - Accordions
    - Smooth anchor scrolling
    - Contact form validation + Google reCAPTCHA + Firestore save
+   - NEW: Video intro → text fades in after ~3s (with fallbacks)
 */
 
 /* Helpers */
@@ -13,6 +14,56 @@ const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
 /* Footer year */
 const yr = $('#yr');
 if (yr) yr.textContent = new Date().getFullYear();
+
+/* ================== HERO video → text ================== */
+(function heroGate(){
+  const hero = $('#hero');
+  if (!hero) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) { hero.classList.add('hero--text-in'); return; }
+
+  const vid = hero.querySelector('.hero__video');
+  const DELAY_MS = 3000; // show text after 3s
+  let shown = false, timerStarted = false, timerId = null;
+
+  const showText = () => {
+    if (shown) return;
+    shown = true;
+    clearTimeout(timerId);
+    hero.classList.add('hero--text-in');
+  };
+  const startTimer = () => {
+    if (timerStarted) return;
+    timerStarted = true;
+    timerId = setTimeout(showText, DELAY_MS);
+  };
+
+  if (!vid) { startTimer(); return; }
+
+  // Ensure autoplay (muted/inline) and start the timer on first playable moment
+  const tryPlay = () => {
+    startTimer();
+    const p = vid.play();
+    if (p && typeof p.then === 'function') {
+      p.catch(() => { /* if blocked, fallback timer still runs */ });
+    }
+  };
+
+  if (vid.readyState >= 2) {
+    tryPlay();
+  } else {
+    vid.addEventListener('loadeddata', tryPlay, { once:true });
+    // safety if 'loadeddata' never fires
+    setTimeout(tryPlay, 800);
+  }
+
+  // If you prefer to reveal strictly when the video finishes, uncomment:
+  // vid.addEventListener('ended', showText, { once:true });
+
+  // Another safety: ensure text appears even if nothing happens
+  setTimeout(showText, 7000);
+})();
 
 /* ================== BACKGROUND FADE (black → blue) ================== */
 (function bgFade(){
@@ -87,35 +138,35 @@ if (yr) yr.textContent = new Date().getFullYear();
 
       const dir = inferDir(el);
       const baseDelay = parseInt(el.getAttribute('data-delay') || '0', 10) || 0;
-      const distance = 36, blurStart = 8, rot = 6;
+      const distance = 36, blurStart = 8;
       let keyframes;
 
       switch (dir){
         case 'left':
           keyframes = [
-            { opacity:0, transform:`translateX(${-distance}px) rotateY(${rot}deg) translateZ(0)`, filter:`blur(${blurStart}px) saturate(.9)` },
-            { opacity:1, transform:`translateX(0) rotateY(0deg) translateZ(0)`,                   filter:'blur(0) saturate(1)' }
+            { opacity:0, transform:`translateX(-${distance}px) rotateY(6deg)`, filter:`blur(${blurStart}px) saturate(.9)` },
+            { opacity:1, transform:`translateX(0) rotateY(0deg)`,              filter:'blur(0) saturate(1)' }
           ]; break;
         case 'right':
           keyframes = [
-            { opacity:0, transform:`translateX(${distance}px) rotateY(${-rot}deg) translateZ(0)`, filter:`blur(${blurStart}px) saturate(.9)` },
-            { opacity:1, transform:`translateX(0) rotateY(0deg) translateZ(0)`,                   filter:'blur(0) saturate(1)' }
+            { opacity:0, transform:`translateX(${distance}px) rotateY(-6deg)`, filter:`blur(${blurStart}px) saturate(.9)` },
+            { opacity:1, transform:`translateX(0) rotateY(0deg)`,              filter:'blur(0) saturate(1)' }
           ]; break;
         case 'down':
           keyframes = [
-            { opacity:0, transform:`translateY(${-distance}px) translateZ(0)`, filter:`blur(${blurStart}px) saturate(.9)` },
-            { opacity:1, transform:`translateY(0) translateZ(0)`,              filter:'blur(0) saturate(1)' }
+            { opacity:0, transform:`translateY(-${distance}px)`, filter:`blur(${blurStart}px) saturate(.9)` },
+            { opacity:1, transform:`translateY(0)`,              filter:'blur(0) saturate(1)' }
           ]; break;
         case 'scale':
           keyframes = [
-            { opacity:0, transform:'scale(.92) translateZ(0)', filter:`blur(${blurStart}px) saturate(.9)` },
-            { opacity:1, transform:'scale(1) translateZ(0)',   filter:'blur(0) saturate(1)' }
+            { opacity:0, transform:'scale(.92)', filter:`blur(${blurStart}px) saturate(.9)` },
+            { opacity:1, transform:'scale(1)',   filter:'blur(0) saturate(1)' }
           ]; break;
         case 'up':
         default:
           keyframes = [
-            { opacity:0, transform:`translateY(${distance}px) translateZ(0)`, filter:`blur(${blurStart}px) saturate(.9)` },
-            { opacity:1, transform:`translateY(0) translateZ(0)`,             filter:'blur(0) saturate(1)' }
+            { opacity:0, transform:`translateY(${distance}px)`, filter:`blur(${blurStart}px) saturate(.9)` },
+            { opacity:1, transform:`translateY(0)`,             filter:'blur(0) saturate(1)' }
           ];
       }
 
@@ -159,7 +210,7 @@ $$('a[href^="#"]').forEach(a=>{
   });
 });
 
-/* ================== Contact form (with Firebase + reCAPTCHA) ================== */
+/* ================== Contact form (Firebase + reCAPTCHA) ================== */
 (function formHandler(){
   const form = $('#inqForm');
   if (!form) return;

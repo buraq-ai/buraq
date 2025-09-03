@@ -25,7 +25,22 @@
 
     <!-- HERO -->
     <header class="hero" role="banner" id="hero">
-      <div class="hero__inner hero__inner--center" data-reveal>
+      <!-- Full-bleed video layer -->
+      <div class="hero__anim-wrap" aria-hidden="true">
+        <video
+          class="hero__video"
+          id="introVid"
+          src="assets/buraq-animation.mp4"
+          poster="assets/hero-cctv.jpg"
+          playsinline
+          muted
+          autoplay
+          preload="auto"
+        ></video>
+      </div>
+
+      <!-- Text that fades in after 3s over the video -->
+      <div class="hero__inner hero__inner--center">
         <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
         <h1 class="hero__title">AI-powered ISR for Human Rights Defense</h1>
         <p class="sub">The first ISR platform built for protecting civilians and prosecuting abusers.</p>
@@ -34,6 +49,9 @@
           <a class="btn btn--primary" href="#contact">Get Started</a>
         </div>
       </div>
+
+      <!-- Optional vignette -->
+      <div class="hero__vignette" aria-hidden="true"></div>
     </header>
 
     <!-- OVERVIEW -->

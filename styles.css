@@ -1,6 +1,6 @@
 /* ===== Theme ===== */
 :root{
-  --ink:#000000;          /* hard black base */
+  --ink:#000000;
   --paper:#e6ebf5;
   --muted:#9aa3b2;
   --accent:#2687FF;
@@ -16,10 +16,10 @@ html,body{height:100%}
 body{
   margin:0; color:var(--paper);
   font-family:Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
-  background:#000; /* pure black base; blue glow is a fixed overlay below */
+  background:#000;
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
 }
-img{max-width:100%;display:block}
+img,video{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:none; box-shadow:0 0 0 3px rgba(38,135,255,.35)}
 
@@ -60,24 +60,47 @@ a{color:inherit;text-decoration:none}
   max-width:var(--maxw);
   margin:0 auto;
   padding:64px 6vw;
-  perspective: 1000px; /* enables subtle 3D tilt on reveals */
+  perspective: 1000px;
 }
 
 /* ===== Hero ===== */
 .hero{
   min-height:86vh;
-  display:grid; place-items:center; overflow:hidden;
   position:relative;
-  background: url('assets/hero-cctv.jpg') center/cover no-repeat;
+  display:grid; place-items:center; overflow:hidden;
+  background:#000;
 }
-.hero::before{
-  content:"";
-  position:absolute; inset:0; pointer-events:none;
+
+/* Full-bleed video layer */
+.hero__anim-wrap{
+  position:absolute; inset:0; z-index:0;
+  display:grid; place-items:center;
+  background:#000;
+}
+.hero__video {
+  width: 550px;    /* pick any width */
+  height: auto;    /* keeps aspect ratio */
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;  /* centers it */
+}
+
+/* Optional vignette */
+.hero__vignette{
+  position:absolute; inset:0; z-index:2; pointer-events:none;
   background:
-    radial-gradient(1000px 700px at 70% -200px, rgba(68,114,255,.18), transparent 60%),
-    linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.18) 40%, rgba(0,0,0,0) 100%);
+    radial-gradient(1200px 600px at 50% -200px, rgba(68,114,255,.18), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.18) 40%, rgba(0,0,0,0) 100%),
+    radial-gradient(1200px 800px at 50% 100%, rgba(0,0,0,.45), rgba(0,0,0,.0) 60%);
 }
-.hero__inner{ text-align:center; padding:64px 6vw; max-width:var(--maxw) }
+
+/* Copy above video */
+.hero__inner{
+  text-align:center; padding:64px 6vw; max-width:var(--maxw);
+  position:relative; z-index:3;
+}
+
+/* Typography */
 .kicker{
   font:700 .92rem/1 Inter; letter-spacing:.28em; text-transform:uppercase; color:rgba(255,255,255,.75); margin-bottom:8px;
 }
@@ -96,6 +119,22 @@ a{color:inherit;text-decoration:none}
 .btn--primary{ background:var(--accent); color:#fff }
 .btn--primary:hover{ background:var(--accent-2) }
 .btn--ghost{ background:transparent; border:1px solid rgba(255,255,255,.18); color:#fff }
+
+/* === Hero staged reveal === */
+.hero .kicker,
+.hero .hero__title,
+.hero .sub,
+.hero .cta-row{
+  opacity:0; transform:translateY(12px);
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(18px); filter:blur(1px) saturate(.95); }
+  to   { opacity:1; transform:none; filter:none; }
+}
+.hero.hero--text-in .kicker{ animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) .05s forwards }
+.hero.hero--text-in .hero__title{ animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) .18s forwards }
+.hero.hero--text-in .sub{ animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) .32s forwards }
+.hero.hero--text-in .cta-row{ animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) .48s forwards }
 
 /* ===== Text styles ===== */
 .eyebrow{ font:700 .85rem/1 Inter; letter-spacing:.25em; text-transform:uppercase; color:var(--muted) }
@@ -179,13 +218,16 @@ footer{
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce){
-  #bgGrad{ opacity:1 } /* show gradient */
-  [data-reveal]{ opacity:1 !important; transform:none !important; filter:none !important }
+  #bgGrad{ opacity:1 }
+  .hero .kicker,
+  .hero .hero__title,
+  .hero .sub,
+  .hero .cta-row{ opacity:1; transform:none; animation:none !important }
 }
 
 /* ===== Google reCAPTCHA alignment ===== */
 .g-recaptcha {
   margin-top: 16px;
-  transform: scale(0.96);      /* optional to visually match input scale */
+  transform: scale(0.96);
   transform-origin: left;
 }
