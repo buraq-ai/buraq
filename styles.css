@@ -28,7 +28,7 @@ a{color:inherit;text-decoration:none}
   position:fixed; top:0px; left:-5px; z-index:1000;
   display:flex; align-items:center; gap:10px;
   padding:10px 12px; border-radius:12px;
-  -webkit-backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(0px);
   transition: background .2s ease, transform .06s ease-in;
 }
 .site-brand:hover{ background:rgba(0,0,0,.5) }
