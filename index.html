@@ -13,10 +13,31 @@
 </head>
 <body>
 
-  <!-- Top-left brand -->
-  <a class="site-brand" href="#top" aria-label="Buraq AI – Home">
-    <img class="site-brand__img" src="assets/buraq-horse.png" alt="Buraq horse logo" width="200" height="200" decoding="async" fetchpriority="high">
-  </a>
+  <!-- Top navigation -->
+  <nav class="nav" role="navigation" aria-label="Main">
+    <div class="nav__inner">
+      <a class="nav__brand" href="#top" aria-label="Buraq AI – Home">
+        <img src="assets/buraq-horse.png" alt="" width="28" height="28" />
+        <span>Buraq AI</span>
+      </a>
+
+      <div class="nav__spacer" aria-hidden="true"></div>
+
+      <a class="btn btn--nav" href="#contact">Get Started</a>
+
+      <button id="btnSearch" class="icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path d="M10.5 3a7.5 7.5 0 0 1 5.83 12.27l4.2 4.2-1.42 1.41-4.2-4.2A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 .001 11.001A5.5 5.5 0 0 0 10.5 5Z" fill="currentColor"/>
+        </svg>
+      </button>
+
+      <button id="btnMenu" class="icon-btn" aria-label="Open menu" aria-haspopup="dialog" aria-controls="menuPanel">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h16v2H4v-2Z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
 
   <!-- Fixed, behind-the-site blue gradient whose opacity is driven by scroll -->
   <div id="bgGrad" aria-hidden="true"></div>
@@ -39,7 +60,7 @@
         ></video>
       </div>
 
-      <!-- Text that fades in after 3s over the video -->
+      <!-- Text that fades in after ~3s over the video -->
       <div class="hero__inner hero__inner--center">
         <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
         <h1 class="hero__title">AI-powered ISR for Human Rights Defense</h1>
@@ -47,6 +68,13 @@
         <div class="cta-row">
           <a class="btn btn--ghost" href="#overview">More Info</a>
           <a class="btn btn--primary" href="#contact">Get Started</a>
+        </div>
+
+        <div class="scroll-indicator" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path d="M12 16.5 5.5 10l1.4-1.4L12 13.7l5.1-5.1L18.5 10 12 16.5Z" fill="currentColor"/>
+          </svg>
+          <span>Explore Our Mission</span>
         </div>
       </div>
 
@@ -244,6 +272,33 @@
       </nav>
     </footer>
   </main>
+
+  <!-- Search overlay -->
+  <div id="searchPanel" class="panel panel--overlay" aria-hidden="true">
+    <div class="panel__backdrop" data-close="search"></div>
+    <div class="panel__content panel__content--search" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+      <button class="icon-btn panel__close" data-close="search" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="m6 6 12 12m0-12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <h3 id="searchTitle" class="sr-only">Search</h3>
+      <input type="search" id="siteSearch" placeholder="Search…" autocomplete="off" />
+    </div>
+  </div>
+
+  <!-- Menu drawer -->
+  <div id="menuPanel" class="panel panel--side" aria-hidden="true">
+    <div class="panel__backdrop" data-close="menu"></div>
+    <nav class="panel__content panel__content--menu" role="dialog" aria-modal="true" aria-label="Menu">
+      <button class="icon-btn panel__close" data-close="menu" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="m6 6 12 12m0-12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <a href="#overview">Overview</a>
+      <a href="#platform">Platform</a>
+      <a href="#resources">Principles</a>
+      <a href="#ethics">Ethics</a>
+      <a href="#contact">Get Started</a>
+    </nav>
+  </div>
 
   <!-- Scripts: reCAPTCHA → Firebase (module) → main -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
