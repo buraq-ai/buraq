@@ -276,3 +276,8 @@ footer{
   #bgGrad{ opacity:1 }
   .hero .kicker, .hero .hero__title, .hero .sub, .hero .cta-row{ opacity:1; transform:none; animation:none !important }
 }
+
+/* move reCAPTCHA down a bit */
+.g-recaptcha {
+  margin-top: 12px;   /* adjust value as needed */
+}
