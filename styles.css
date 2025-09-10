@@ -78,14 +78,6 @@ a{color:inherit;text-decoration:none}
   position: relative;
 }
 
-/* Elegant divider between sections */
-.section + .section::before{
-  content:"";
-  position:absolute;
-  left:6vw; right:6vw; top:-1px; height:1px;
-  background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.14), rgba(255,255,255,0));
-  opacity:.35;
-}
 .section--alt{
   background:linear-gradient(180deg, #0b0f18 0%, #0a0d16 100%);
   border:1px solid rgba(255,255,255,.05);
