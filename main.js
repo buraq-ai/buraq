@@ -4,7 +4,9 @@
    - Accordions
    - Smooth anchor scrolling
    - Contact form validation + Google reCAPTCHA + Firestore save
-   - NEW: Video intro → text fades in after ~3s (with fallbacks)
+   - Video intro → text fades in after ~3s (with fallbacks)
+   - NEW: Showcase slider (autoplay, swipe, dots, keyboard)
+   - NEW: Sticky story gallery (scroll-driven image fades)
 */
 
 /* Helpers */
@@ -41,7 +43,6 @@ if (yr) yr.textContent = new Date().getFullYear();
 
   if (!vid) { startTimer(); return; }
 
-  // Ensure autoplay (muted/inline) and start the timer on first playable moment
   const tryPlay = () => {
     startTimer();
     const p = vid.play();
@@ -54,14 +55,9 @@ if (yr) yr.textContent = new Date().getFullYear();
     tryPlay();
   } else {
     vid.addEventListener('loadeddata', tryPlay, { once:true });
-    // safety if 'loadeddata' never fires
     setTimeout(tryPlay, 800);
   }
 
-  // If you prefer to reveal strictly when the video finishes, uncomment:
-  // vid.addEventListener('ended', showText, { once:true });
-
-  // Another safety: ensure text appears even if nothing happens
   setTimeout(showText, 7000);
 })();
 
@@ -98,7 +94,7 @@ if (yr) yr.textContent = new Date().getFullYear();
   if (!els.length) return;
 
   function groupKey(el){
-    const c = el.closest('.pillars, .form__grid, .chips, .accordions, section, main');
+    const c = el.closest('.pillars, .form__grid, .chips, .accordions, .gallery__steps, section, main');
     return c ? c : document.body;
   }
   const groups = new Map();
@@ -138,44 +134,44 @@ if (yr) yr.textContent = new Date().getFullYear();
 
       const dir = inferDir(el);
       const baseDelay = parseInt(el.getAttribute('data-delay') || '0', 10) || 0;
-      const distance = 36, blurStart = 8;
+      const distance = 28, blurStart = 6; // slightly subtler than before
       let keyframes;
 
       switch (dir){
         case 'left':
           keyframes = [
-            { opacity:0, transform:`translateX(-${distance}px) rotateY(6deg)`, filter:`blur(${blurStart}px) saturate(.9)` },
-            { opacity:1, transform:`translateX(0) rotateY(0deg)`,              filter:'blur(0) saturate(1)' }
+            { opacity:0, transform:`translateX(-${distance}px)`, filter:`blur(${blurStart}px) saturate(.98)` },
+            { opacity:1, transform:`translateX(0)`,              filter:'blur(0) saturate(1)' }
           ]; break;
         case 'right':
           keyframes = [
-            { opacity:0, transform:`translateX(${distance}px) rotateY(-6deg)`, filter:`blur(${blurStart}px) saturate(.9)` },
-            { opacity:1, transform:`translateX(0) rotateY(0deg)`,              filter:'blur(0) saturate(1)' }
+            { opacity:0, transform:`translateX(${distance}px)`, filter:`blur(${blurStart}px) saturate(.98)` },
+            { opacity:1, transform:`translateX(0)`,             filter:'blur(0) saturate(1)' }
           ]; break;
         case 'down':
           keyframes = [
-            { opacity:0, transform:`translateY(-${distance}px)`, filter:`blur(${blurStart}px) saturate(.9)` },
+            { opacity:0, transform:`translateY(-${distance}px)`, filter:`blur(${blurStart}px) saturate(.98)` },
             { opacity:1, transform:`translateY(0)`,              filter:'blur(0) saturate(1)' }
           ]; break;
         case 'scale':
           keyframes = [
-            { opacity:0, transform:'scale(.92)', filter:`blur(${blurStart}px) saturate(.9)` },
+            { opacity:0, transform:'scale(.97)', filter:`blur(${blurStart}px) saturate(.98)` },
             { opacity:1, transform:'scale(1)',   filter:'blur(0) saturate(1)' }
           ]; break;
         case 'up':
         default:
           keyframes = [
-            { opacity:0, transform:`translateY(${distance}px)`, filter:`blur(${blurStart}px) saturate(.9)` },
-            { opacity:1, transform:`translateY(0)`,             filter:'blur(0) saturate(1)' }
+            { opacity:0, transform:`translateY(${distance}px)`, filter:`blur(${blurStart}px) saturate(.98)` },
+            { opacity:1, transform:'translateY(0)',             filter:'blur(0) saturate(1)' }
           ];
       }
 
       const group = groups.get(groupKey(el)) || [el];
-      const stagger = 80;
+      const stagger = 70;
       const delay = baseDelay + (group.indexOf(el) * stagger);
 
       const anim = el.animate(keyframes, {
-        duration: 820, easing: 'cubic-bezier(.18,.7,.13,1)', delay, fill: 'forwards'
+        duration: 720, easing: 'cubic-bezier(.18,.7,.13,1)', delay, fill: 'forwards'
       });
       anim.addEventListener('finish', ()=> el.classList.add('revealed'));
     }
@@ -237,7 +233,6 @@ $$('a[href^="#"]').forEach(a=>{
       return;
     }
 
-    // reCAPTCHA
     if (typeof grecaptcha === 'undefined') {
       setMsg('error', 'reCAPTCHA failed to load. Please refresh and try again.');
       return;
@@ -264,7 +259,7 @@ $$('a[href^="#"]').forEach(a=>{
         title:     data.title || '',
         country:   data.country,
         notes:     data.notes,
-        recaptcha: captchaResponse   // NOTE: verify on server for production
+        recaptcha: captchaResponse
       };
 
       const res = await window.saveInquiry(payload);
@@ -279,4 +274,107 @@ $$('a[href^="#"]').forEach(a=>{
       submitBtn?.removeAttribute('disabled');
     }
   });
+})();
+
+/* ================== NEW: Showcase slider ================== */
+(function showcaseSlider(){
+  const root = $('.slider');
+  if (!root) return;
+
+  const track = $('.slider__track', root);
+  const slides = $$('.slide', track);
+  const prevBtn = $('.slider__btn--prev', root);
+  const nextBtn = $('.slider__btn--next', root);
+  const dotsWrap = $('.slider__dots', root);
+
+  let idx = 0;
+  let timerId = null;
+  let inview = true;
+  const AUTO_MS = 5200;
+
+  function setActive(i){
+    idx = (i + slides.length) % slides.length;
+    slides.forEach((s, j)=>{
+      s.classList.toggle('is-active', j === idx);
+      s.setAttribute('aria-hidden', j === idx ? 'false' : 'true');
+      if (dotsWrap?.children[j]) dotsWrap.children[j].classList.toggle('is-on', j === idx);
+    });
+  }
+
+  function next(){ setActive(idx + 1); }
+  function prev(){ setActive(idx - 1); }
+
+  function start(){
+    stop();
+    if (!inview) return;
+    timerId = setInterval(next, AUTO_MS);
+  }
+  function stop(){ if (timerId) { clearInterval(timerId); timerId = null; } }
+
+  // Dots
+  if (dotsWrap) {
+    dotsWrap.innerHTML = slides.map((_, i)=> `<button class="dot${i===0?' is-on':''}" role="tab" aria-label="Go to slide ${i+1}"></button>`).join('');
+    [...dotsWrap.children].forEach((b, i)=> b.addEventListener('click', ()=>{ setActive(i); start(); }));
+  }
+
+  prevBtn?.addEventListener('click', ()=>{ prev(); start(); });
+  nextBtn?.addEventListener('click', ()=>{ next(); start(); });
+
+  // Keyboard
+  root.addEventListener('keydown', (e)=>{
+    if (e.key === 'ArrowLeft'){ prev(); start(); }
+    if (e.key === 'ArrowRight'){ next(); start(); }
+  });
+  root.setAttribute('tabindex', '0');
+
+  // Hover pause
+  root.addEventListener('mouseenter', stop);
+  root.addEventListener('mouseleave', start);
+
+  // Visibility / in-view pause
+  document.addEventListener('visibilitychange', ()=>{ if (document.hidden) stop(); else start(); });
+  const io = new IntersectionObserver(([e])=>{ inview = e?.isIntersecting; inview ? start() : stop(); }, { threshold: .25 });
+  io.observe(root);
+
+  // Touch swipe
+  let startX = 0, swiping = false;
+  root.addEventListener('pointerdown', e=>{ swiping = true; startX = e.clientX; stop(); root.setPointerCapture(e.pointerId); });
+  root.addEventListener('pointerup', e=>{
+    if (!swiping) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 50) (dx > 0 ? prev() : next());
+    swiping = false; start();
+  });
+
+  setActive(0);
+  start();
+})();
+
+/* ================== NEW: Sticky story gallery ================== */
+(function stickyGallery(){
+  const vis = $('.gallery__vis');
+  const imgs = $$('.gallery__img', vis);
+  const steps = $$('.gallery .step');
+  if (!vis || !imgs.length || !steps.length) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function show(i){
+    imgs.forEach((im, j)=> im.classList.toggle('is-on', i === j));
+  }
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if (e.isIntersecting) {
+        const i = parseInt(e.target.getAttribute('data-index'), 10) || 0;
+        show(i);
+      }
+    });
+  }, { threshold: 0.55, rootMargin: '-10% 0px -10% 0px' });
+
+  steps.forEach(s=> io.observe(s));
+
+  if (prefersReduced) {
+    imgs.forEach(im=> im.classList.add('is-on'));
+  }
 })();

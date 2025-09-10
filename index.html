@@ -44,9 +44,8 @@
 
   <main id="top">
 
-    <!-- HERO -->
+    <!-- ===== HERO (unchanged) ===== -->
     <header class="hero" role="banner" id="hero">
-      <!-- Full-bleed video layer -->
       <div class="hero__anim-wrap" aria-hidden="true">
         <video
           class="hero__video"
@@ -60,7 +59,6 @@
         ></video>
       </div>
 
-      <!-- Text that fades in after ~3s over the video -->
       <div class="hero__inner hero__inner--center">
         <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
         <h1 class="hero__title">AI-powered ISR for Human Rights Defense</h1>
@@ -78,7 +76,6 @@
         </div>
       </div>
 
-      <!-- Optional vignette -->
       <div class="hero__vignette" aria-hidden="true"></div>
     </header>
 
@@ -129,6 +126,52 @@
       </div>
     </section>
 
+    <!-- ===== NEW: SHOWCASE (slideshow) ===== -->
+    <section id="showcase" class="section section--alt">
+      <div class="eyebrow" data-reveal>Showcase</div>
+      <h2 class="title" data-reveal>Field-tested scenarios</h2>
+      <p class="lead" data-reveal>Glance through deployments and use-cases from austere edge to dense urban environments.</p>
+
+      <div class="slider" data-reveal>
+        <button class="slider__btn slider__btn--prev" aria-label="Previous slide">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4 7.5 12l8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+
+        <div class="slider__track" role="region" aria-label="Image showcase">
+          <figure class="slide is-active">
+            <img src="assets/hero-cctv.jpg" alt="High-contrast CCTV scene" loading="lazy">
+            <figcaption>Real-time detection &amp; tracking on constrained devices.</figcaption>
+          </figure>
+
+          <figure class="slide">
+            <img src="assets/use-infra.jpg" alt="Edge infrastructure" loading="lazy">
+            <figcaption>Self-contained edge clusters for offline autonomy.</figcaption>
+          </figure>
+
+          <figure class="slide">
+            <img src="assets/use-city.jpg" alt="Urban documentation" loading="lazy">
+            <figcaption>Urban documentation with tamper-evident chain of custody.</figcaption>
+          </figure>
+
+          <figure class="slide">
+            <img src="assets/use-transport.jpg" alt="Mobile deployment" loading="lazy">
+            <figcaption>Rapid mobile deployments from vehicles to rooftop hubs.</figcaption>
+          </figure>
+
+          <figure class="slide">
+            <img src="assets/tile-health.jpg" alt="Humanitarian corridors" loading="lazy">
+            <figcaption>Protecting civilians and humanitarian corridors.</figcaption>
+          </figure>
+        </div>
+
+        <button class="slider__btn slider__btn--next" aria-label="Next slide">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m8.5 4 8 8-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+
+        <div class="slider__dots" role="tablist" aria-label="Select slide"></div>
+      </div>
+    </section>
+
     <!-- PRINCIPLES -->
     <section id="resources" class="section">
       <div class="eyebrow" data-reveal>Principles</div>
@@ -165,7 +208,41 @@
       </ul>
     </section>
 
-    <!-- INSIGHTS -->
+    <!-- ===== NEW: STICKY STORY GALLERY ===== -->
+    <section id="gallery" class="section section--sticky">
+      <div class="eyebrow" data-reveal>How it comes together</div>
+      <h2 class="title" data-reveal>From the field to the courtroom</h2>
+
+      <div class="gallery">
+        <div class="gallery__vis" aria-hidden="true">
+          <img class="gallery__img is-on" src="assets/use-infra.jpg" alt="">
+          <img class="gallery__img" src="assets/use-city.jpg" alt="">
+          <img class="gallery__img" src="assets/use-transport.jpg" alt="">
+          <img class="gallery__img" src="assets/tile-health.jpg" alt="">
+        </div>
+
+        <div class="gallery__steps">
+          <article class="step card" data-index="0" data-reveal>
+            <h3>1) Capture &amp; Verify</h3>
+            <p>Trusted timestamping, geotagging, and sensor attestation at the edge.</p>
+          </article>
+          <article class="step card" data-index="1" data-reveal>
+            <h3>2) Structure the Narrative</h3>
+            <p>Multilingual NLP turns disparate reports into cohesive incident timelines.</p>
+          </article>
+          <article class="step card" data-index="2" data-reveal>
+            <h3>3) Preserve the Chain</h3>
+            <p>Immutable logs &amp; cryptographic seals meet ICC/UNHRC expectations.</p>
+          </article>
+          <article class="step card" data-index="3" data-reveal>
+            <h3>4) Present as Evidence</h3>
+            <p>Export case bundles with provenance to accelerate accountability.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSIGHTS (unchanged content, retains your accordions) -->
     <section id="field" class="section">
       <div class="eyebrow" data-reveal>Insights</div>
       <h2 class="title" data-reveal>Discover our system's role in protecting global human rights.</h2>
@@ -294,8 +371,10 @@
       </button>
       <a href="#overview">Overview</a>
       <a href="#platform">Platform</a>
+      <a href="#showcase">Showcase</a>
       <a href="#resources">Principles</a>
       <a href="#ethics">Ethics</a>
+      <a href="#gallery">How it works</a>
       <a href="#contact">Get Started</a>
     </nav>
   </div>
