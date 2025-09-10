@@ -181,8 +181,10 @@ a{color:inherit;text-decoration:none}
 }
 .acc__icon{ width:22px;height:22px; border-radius:6px; background:rgba(255,255,255,.12); display:grid; place-items:center; font-weight:900 }
 .acc__body{
-  display:grid; grid-template-columns:1.1fr .9fr; gap:24px;
-  max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s ease;
+  display:block;   /* or keep grid but with 1 column */
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .35s ease, padding .35s ease;
   padding:0 6px;
 }
 .acc.open .acc__body{ padding-bottom:18px }
