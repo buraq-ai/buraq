@@ -281,16 +281,16 @@ $$('a[href^="#"]').forEach(a=>{
   const root = $('.slider');
   if (!root) return;
 
-  const track = $('.slider__track', root);
-  const slides = $$('.slide', track);
+  const track   = $('.slider__track', root);
+  const slides  = $$('.slide', track);
   const prevBtn = $('.slider__btn--prev', root);
   const nextBtn = $('.slider__btn--next', root);
-  const dotsWrap = $('.slider__dots', root);
+  const dotsWrap= $('.slider__dots', root);
 
   let idx = 0;
   let timerId = null;
   let inview = true;
-  const AUTO_MS = 5200;
+  const AUTO_MS = 10000; // <-- autoplay every 10s
 
   function setActive(i){
     idx = (i + slides.length) % slides.length;
@@ -317,6 +317,7 @@ $$('a[href^="#"]').forEach(a=>{
     [...dotsWrap.children].forEach((b, i)=> b.addEventListener('click', ()=>{ setActive(i); start(); }));
   }
 
+  // Buttons (ensure clicks aren't swallowed by swipe handling)
   prevBtn?.addEventListener('click', ()=>{ prev(); start(); });
   nextBtn?.addEventListener('click', ()=>{ next(); start(); });
 
@@ -336,9 +337,13 @@ $$('a[href^="#"]').forEach(a=>{
   const io = new IntersectionObserver(([e])=>{ inview = e?.isIntersecting; inview ? start() : stop(); }, { threshold: .25 });
   io.observe(root);
 
-  // Touch swipe
+  // Touch swipe — ignore when starting on buttons/dots so clicks work
   let startX = 0, swiping = false;
-  root.addEventListener('pointerdown', e=>{ swiping = true; startX = e.clientX; stop(); root.setPointerCapture(e.pointerId); });
+  root.addEventListener('pointerdown', e=>{
+    if (e.target.closest('.slider__btn') || e.target.closest('.slider__dots')) return; // <-- key fix
+    swiping = true; startX = e.clientX; stop();
+    try { root.setPointerCapture(e.pointerId); } catch(_){}
+  });
   root.addEventListener('pointerup', e=>{
     if (!swiping) return;
     const dx = e.clientX - startX;
@@ -352,10 +357,16 @@ $$('a[href^="#"]').forEach(a=>{
 
 /* ================== NEW: Sticky story gallery ================== */
 (function stickyGallery(){
-  const vis = $('.gallery__vis');
-  const imgs = $$('.gallery__img', vis);
+  const vis   = $('.gallery__vis');
+  const imgs  = $$('.gallery__img', vis);
   const steps = $$('.gallery .step');
   if (!vis || !imgs.length || !steps.length) return;
+
+  // If there's only one image, keep it on—no fading or switching while scrolling
+  if (imgs.length === 1){
+    imgs[0].classList.add('is-on');
+    return;
+  }
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -375,6 +386,6 @@ $$('a[href^="#"]').forEach(a=>{
   steps.forEach(s=> io.observe(s));
 
   if (prefersReduced) {
-    imgs.forEach(im=> im.classList.add('is-on'));
+    imgs.forEach((im, j)=> im.classList.toggle('is-on', j === 0));
   }
 })();
