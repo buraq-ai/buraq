@@ -1,4 +1,4 @@
-/* ===== Theme ===== */
+/* ===== THEME ===== */
 :root{
   --ink:#0b0d12;
   --paper:#e6ebf5;
@@ -8,9 +8,12 @@
 
   --maxw:1180px;
   --radius:16px;
+
+  /* Default image focus for ops cards (override per card) */
+  --ops-img-position: center center;
 }
 
-/* ===== Base ===== */
+/* ===== BASE ===== */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -24,7 +27,7 @@ a{color:inherit;text-decoration:none}
 :focus-visible{outline:none; box-shadow:0 0 0 3px rgba(38,135,255,.35)}
 .sr-only{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px)}
 
-/* ===== Top nav ===== */
+/* ===== TOP NAV ===== */
 .nav{
   position:sticky; top:0; z-index:2000;
   backdrop-filter: blur(10px);
@@ -60,7 +63,7 @@ a{color:inherit;text-decoration:none}
 }
 .icon-btn:hover{background:rgba(255,255,255,.08)}
 
-/* ===== Gradient behind site (scroll opacity via --bgp) ===== */
+/* ===== FIXED BACKDROP GRADIENT (scroll opacity via --bgp) ===== */
 #bgGrad{
   position:fixed; inset:0; z-index:-1; pointer-events:none;
   background:
@@ -69,7 +72,7 @@ a{color:inherit;text-decoration:none}
   opacity: var(--bgp, 0);
 }
 
-/* ===== Sections ===== */
+/* ===== SECTIONS ===== */
 .section{
   max-width:var(--maxw);
   margin:0 auto;
@@ -83,7 +86,7 @@ a{color:inherit;text-decoration:none}
   border-radius:24px;
 }
 
-/* ===== Hero ===== */
+/* ===== HERO ===== */
 .hero{
   min-height:86vh;
   position:relative;
@@ -144,12 +147,12 @@ a{color:inherit;text-decoration:none}
 .hero.hero--text-in .sub{ animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) .32s forwards }
 .hero.hero--text-in .cta-row{ animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) .48s forwards }
 
-/* ===== Text styles ===== */
+/* ===== TEXT STYLES ===== */
 .eyebrow{ font:700 .85rem/1 Inter; letter-spacing:.25em; text-transform:uppercase; color:var(--muted) }
 .title{ font-family:"Bebas Neue"; font-size:clamp(2.2rem,3.8vw,3.8rem); margin:.35em 0 .4em }
 .lead{ max-width:900px; color:#e8edf8 }
 
-/* ===== Cards / grids ===== */
+/* ===== CARDS/GRIDS (overview & principles) ===== */
 .pillars{ display:grid; gap:18px; grid-template-columns:repeat(3,1fr); margin-top:22px }
 .pillars--two{ grid-template-columns:repeat(2,1fr) }
 .card{
@@ -162,14 +165,14 @@ a{color:inherit;text-decoration:none}
 .card h3{ margin:0 0 8px; font-size:1.25rem }
 .card p{ color:#cfd5e3 }
 
-/* ===== Chips ===== */
+/* ===== CHIPS ===== */
 .chips{ display:flex; flex-wrap:wrap; gap:10px; padding:0; margin:18px 0 0; list-style:none }
 .chips li{
   padding:10px 12px; border:1px solid rgba(255,255,255,.12);
   border-radius:999px; background:#151924; color:#e9edf7; font-weight:600; font-size:.95rem;
 }
 
-/* ===== Accordions ===== */
+/* ===== ACCORDIONS ===== */
 .accordions{ margin-top:12px; border-top:1px solid rgba(255,255,255,.08) }
 .acc{ border-bottom:1px solid rgba(255,255,255,.08) }
 .acc__head{
@@ -187,14 +190,13 @@ a{color:inherit;text-decoration:none}
 }
 .acc.open .acc__body{ padding-bottom:18px }
 
-/* ===== Slider ===== */
+/* ===== SLIDER ===== */
 .slider{
   position:relative; border-radius:20px; overflow:hidden;
   border:1px solid rgba(255,255,255,.08);
   box-shadow:0 16px 50px rgba(0,0,0,.45);
   margin-top:18px;
 }
-/* Use clamp so height scales well on phones, laptops, big monitors */
 .slider__track{
   position:relative;
   height:clamp(240px, 50vw, 620px);
@@ -205,9 +207,9 @@ a{color:inherit;text-decoration:none}
   background:#0a0d16;
   display:grid;
 }
-.slide.is-active{ opacity:1; transform:scale(1.02) }
+.slide.is-active{ opacity:1; transform:scale(1.1) }
 .slide img{
-  width:100%; height:100%;
+  width:110%; height:110%;
   object-fit:cover; object-position:center;
 }
 .slide figcaption{
@@ -228,7 +230,6 @@ a{color:inherit;text-decoration:none}
 .slider__btn:hover{ background:rgba(0,0,0,.6) }
 .slider__btn--prev{ left:12px }
 .slider__btn--next{ right:12px }
-
 .slider__dots{
   position:absolute; left:50%; transform:translateX(-50%); bottom:10px;
   display:flex; gap:8px; z-index:6;
@@ -239,58 +240,128 @@ a{color:inherit;text-decoration:none}
 }
 .slider__dots .dot.is-on{ background:#fff }
 
-/* ===== Opposition (Ops) mosaic — fluid media boxes ===== */
+/* ======================================================================
+   OPPOSITION GRID (OPS): 2 squares on the first row, 3 squares below
+   - Each tile has a 1:1 image area on top and a solid caption block under
+   ====================================================================== */
 .ops-grid{
   display:grid;
-  grid-template-columns:repeat(3, 1fr);
   gap:16px;
   margin-top:18px;
+  overflow:visible; /* allow hover scale to spill outside */
 }
+
+/* Large screens: 6-column grid.
+   - Item 1 spans 3 columns (top-left)
+   - Item 2 spans 3 columns (top-right)
+   - Items 3–5 each span 2 columns (bottom row => 3 across) */
+@media (min-width: 981px){
+  .ops-grid{ grid-template-columns: repeat(6, 1fr); }
+  .ops-grid > .ops-card:nth-child(1){ grid-column: span 3; }
+  .ops-grid > .ops-card:nth-child(2){ grid-column: span 3; }
+  .ops-grid > .ops-card:nth-child(n+3){ grid-column: span 2; }
+}
+
+/* Tablets: simple 2-up grid */
+@media (max-width: 980px){
+  .ops-grid{ grid-template-columns: repeat(2, 1fr); }
+  .ops-grid > .ops-card{ grid-column:auto !important; }
+}
+
+/* Phones: single column */
+@media (max-width: 600px){
+  .ops-grid{ grid-template-columns: 1fr; }
+}
+
+/* Card container + interactive hover sizing */
 .ops-card{
   position:relative;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;                /* rounded corners clip media */
   border-radius:var(--radius);
-  overflow:hidden;
+  background:linear-gradient(180deg, #161b25, #0f131b);
   border:1px solid rgba(255,255,255,.08);
-  background:#0a0d16;
-  transition: box-shadow .25s ease, transform .25s ease;
+  box-shadow:0 14px 40px rgba(0,0,0,.45);
+  transform: scale(.96);          /* slightly smaller by default */
+  transition:
+    transform .28s cubic-bezier(.2,.7,.2,1),
+    box-shadow .28s ease,
+    filter .28s ease;
+  will-change: transform;
 }
-.ops-card:hover{
-  box-shadow:0 18px 60px rgba(0,0,0,.55);
-  transform:translateY(-2px);
+.ops-grid:hover .ops-card{
+  transform: scale(.90);          /* all shrink on grid hover */
+  filter: brightness(.93) saturate(.93);
 }
-/* Aspect-ratio containers for consistent sizing across devices */
+.ops-grid:hover .ops-card:hover{
+  transform: scale(1.10);         /* hovered card pops */
+  z-index:3;
+  filter:none;
+  box-shadow:0 24px 70px rgba(0,0,0,.6);
+}
+.ops-card:focus-within{
+  transform: scale(1.10) !important;
+  z-index:3;
+  filter:none !important;
+  box-shadow:0 24px 70px rgba(0,0,0,.6);
+}
+
+/* Square image area */
 .ops-media{
   position:relative;
   width:100%;
-  aspect-ratio:16 / 10;   /* default card */
+  aspect-ratio: 1 / 1;           /* true square for every tile */
   overflow:hidden;
+  background:#0b0f18;            /* avoids gaps on slow loads */
+  border-bottom:1px solid rgba(255,255,255,.06);
 }
-.ops-card--tall .ops-media{ aspect-ratio: 3 / 4; }
-.ops-card--wide .ops-media{ aspect-ratio: 21 / 9; }
 
+/* Neutralize legacy width/tall variants so everything stays 1:1 */
+.ops-card--wide .ops-media,
+.ops-card--tall .ops-media{ aspect-ratio: 1 / 1; }
+
+/* IMAGE FIT + POSITION CONTROL (uses CSS custom property) */
 .ops-media img{
   position:absolute; inset:0;
   width:100%; height:100%;
-  object-fit:cover; object-position:center;
-  filter:contrast(1.03) saturate(1.02);
+  object-fit:cover;                               /* fill/crop nicely */
+  object-position: var(--ops-img-position, center center) !important;
+  transform:translateZ(0) scale(1.001);
   transition:transform .6s cubic-bezier(.2,.7,.2,1);
 }
-.ops-card:hover .ops-media img{ transform:scale(1.05) }
-.ops-card::after{
-  content:"";
-  position:absolute; inset:0; pointer-events:none;
-  background:
-    radial-gradient(60% 60% at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 60%, rgba(0,0,0,.6) 100%),
-    linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.65) 88%, rgba(0,0,0,.85) 100%);
-}
-.ops-content{
-  position:absolute; left:0; right:0; bottom:0;
-  padding:14px 16px;
-}
-.ops-card h3{ margin:0 0 6px; font-size:1.1rem }
-.ops-card p{ margin:0; color:#cfd5e3; font-size:.95rem }
+.ops-card:hover .ops-media img{ transform:scale(1.05); } /* subtle zoom */
 
-/* ===== Sticky story gallery ===== */
+/* Remove old overlay on top of the image */
+.ops-card::after{ display:none !important; }
+
+/* Caption block under the image */
+.ops-content{
+  position:static;
+  padding:16px 16px 18px;
+  background:linear-gradient(180deg, #151a24 0%, #0f131b 100%);
+  border-top:1px solid rgba(255,255,255,.06);
+  display:flex; flex-direction:column; gap:6px;
+  min-height:112px;               /* evens out row heights visually */
+}
+.ops-card h3{
+  margin:0; font-size:1.06rem; line-height:1.25;
+  color:#f2f6ff; letter-spacing:.01em;
+}
+.ops-card p{
+  margin:0; color:#cfd5e3; font-size:.95rem;
+}
+
+/* Touch devices: calm the hover effect */
+@media (pointer: coarse){
+  .ops-card{ transform:none; }
+  .ops-grid:hover .ops-card,
+  .ops-grid:hover .ops-card:hover{
+    transform:none; filter:none; box-shadow:none;
+  }
+}
+
+/* ===== STICKY STORY GALLERY ===== */
 .section--sticky .gallery{
   display:grid; grid-template-columns:1.1fr .9fr; gap:24px; align-items:start; margin-top:16px;
 }
@@ -309,7 +380,7 @@ a{color:inherit;text-decoration:none}
 .gallery__img.is-on{ opacity:1; transform:scale(1) }
 .gallery__steps{ display:grid; gap:16px }
 
-/* ===== Form ===== */
+/* ===== FORM ===== */
 .form{ margin-top:18px }
 .form__grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px }
 .field{ display:flex; flex-direction:column; gap:8px }
@@ -321,13 +392,13 @@ a{color:inherit;text-decoration:none}
 .form__msg.is-error{ color:#ff6b6b }
 .form__msg.is-success{ color:#29d37d }
 
-/* ===== Footer ===== */
+/* ===== FOOTER ===== */
 footer{
   padding:38px 6vw 64px; display:flex; justify-content:space-between; align-items:center; gap:24px;
   max-width:var(--maxw); margin:0 auto; color:#c2c9d6;
 }
 
-/* ===== Panels ===== */
+/* ===== OVERLAYS / PANELS ===== */
 .panel{position:fixed; inset:0; z-index:2500; display:none}
 .panel[aria-hidden="true"]{display:none}
 .panel:not([aria-hidden]){display:block}
@@ -356,14 +427,14 @@ footer{
 }
 .panel__content--menu a:hover{background:rgba(255,255,255,.07)}
 
-/* ===== Reveals ===== */
+/* ===== REVEALS ===== */
 [data-reveal]{
   opacity:0; transform:translateY(24px); filter:saturate(.98) blur(.5px);
   will-change: transform, opacity, filter;
 }
 .revealed{ opacity:1 !important; transform:none !important; filter:saturate(1) blur(0) !important }
 
-/* ===== Responsive ===== */
+/* ===== RESPONSIVE TWEAKS ===== */
 @media (max-width:1180px){
   .section--sticky .gallery{ grid-template-columns:1fr; }
   .gallery__vis{ order:2; top:60px; }
@@ -373,24 +444,60 @@ footer{
   .pillars{ grid-template-columns:1fr }
   .pillars--two{ grid-template-columns:1fr }
   .acc__body{ grid-template-columns:1fr }
-  .ops-grid{ grid-template-columns:repeat(2, 1fr) }
 }
 @media (max-width:600px){
   .hero__title{ font-size:clamp(2.2rem, 9vw, 3rem) }
   .cta-row{ flex-direction:column }
   .form__grid{ grid-template-columns:1fr }
-  /* Keep arrows visible on mobile, just size them down a bit */
   .slider__btn{ width:40px; height:40px }
   .slider__track{ height:clamp(220px, 56vw, 420px) }
-  .ops-grid{ grid-template-columns:1fr }
 }
 
-/* Reduced motion */
+/* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce){
   #bgGrad{ opacity:1 }
   .hero .kicker, .hero .hero__title, .hero .sub, .hero .cta-row{ opacity:1; transform:none; animation:none !important }
-  .slide, .gallery__img{ transition:none !important }
+  .slide, .gallery__img, .ops-card, .ops-media img{ transition:none !important }
 }
 
+/* ===== MISC ===== */
 /* Move reCAPTCHA down a bit */
 .g-recaptcha { margin-top: 12px; }
+
+/* ===== Helper classes to set image focus quickly (optional) ===== */
+.img-top      { --ops-img-position: top center; }
+.img-bottom   { --ops-img-position: bottom center; }
+.img-left     { --ops-img-position: center left; }
+.img-right    { --ops-img-position: center right; }
+.img-top-left { --ops-img-position: top left; }
+.img-top-right{ --ops-img-position: top right; }
+.img-focus    { --ops-img-position: center 30%; } /* nudged downward */
+
+/* ==== HARD OVERRIDE: make every ops-card image fill its box ==== */
+.ops-card{
+  overflow: hidden;             /* clip corners to card radius */
+  border-radius: var(--radius);
+}
+
+.ops-card .ops-media{
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;          /* square window for all cards */
+  padding: 0;
+  margin: 0;
+  overflow: hidden;              /* crop edges cleanly */
+  background: #0b0f18;
+}
+
+/* FORCE images to cover the window, centered, no gaps */
+.ops-card .ops-media img{
+  position: absolute; inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;      /* fill, crop if needed */
+  object-position: center center !important; /* dead-center */
+  display: block;
+  max-width: none !important;
+  max-height: none !important;
+}
+
