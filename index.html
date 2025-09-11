@@ -44,7 +44,7 @@
 
   <main id="top">
 
-    <!-- ===== HERO (unchanged) ===== -->
+    <!-- ===== HERO ===== -->
     <header class="hero" role="banner" id="hero">
       <div class="hero__anim-wrap" aria-hidden="true">
         <video
@@ -126,7 +126,7 @@
       </div>
     </section>
 
-    <!-- ===== NEW: SHOWCASE (slideshow) ===== -->
+    <!-- SHOWCASE (slider) -->
     <section id="showcase" class="section section--alt">
       <div class="eyebrow" data-reveal>Showcase</div>
       <h2 class="title" data-reveal>Field-tested scenarios</h2>
@@ -139,27 +139,27 @@
 
         <div class="slider__track" role="region" aria-label="Image showcase">
           <figure class="slide is-active">
-            <img src="assets/detectedevents.png" alt="High-contrast CCTV scene" loading="lazy">
+            <img src="assets/detectedevents.png" alt="Real-time detection overlays on monitored scene" loading="lazy">
             <figcaption>Real-time detection &amp; tracking on constrained devices.</figcaption>
           </figure>
 
           <figure class="slide">
-            <img src="assets/drone-with-thermal-night-vision-view-of-terrorist-squad-walking-with-weapons.png" alt="Edge infrastructure" loading="lazy">
+            <img src="assets/drone-with-thermal-night-vision-view-of-terrorist-squad-walking-with-weapons.png" alt="Night surveillance with thermal view" loading="lazy">
             <figcaption>Self-contained edge clusters for offline autonomy.</figcaption>
           </figure>
 
           <figure class="slide">
-            <img src="assets/sar-thermal-drone.png" alt="Urban documentation" loading="lazy">
+            <img src="assets/sar-thermal-drone.png" alt="Thermal aerial reconnaissance" loading="lazy">
             <figcaption>Urban documentation with tamper-evident chain of custody.</figcaption>
           </figure>
 
           <figure class="slide">
-            <img src="assets/top-aerial-view-of-the-aircraft-graveyard-or-airplane-boneyard-in-arizona-united-states.png" alt="Mobile deployment" loading="lazy">
+            <img src="assets/top-aerial-view-of-the-aircraft-graveyard-or-airplane-boneyard-in-arizona-united-states.png" alt="Aerial view of aircraft boneyard" loading="lazy">
             <figcaption>Rapid mobile deployments from vehicles to rooftop hubs.</figcaption>
           </figure>
 
           <figure class="slide">
-            <img src="assets/tile-health.jpg" alt="Humanitarian corridors" loading="lazy">
+            <img src="assets/tile-health.jpg" alt="Humanitarian corridor scene" loading="lazy">
             <figcaption>Protecting civilians and humanitarian corridors.</figcaption>
           </figure>
         </div>
@@ -169,6 +169,75 @@
         </button>
 
         <div class="slider__dots" role="tablist" aria-label="Select slide"></div>
+      </div>
+    </section>
+
+    <!-- OPPOSITION (mosaic, no slideshow) -->
+    <section id="ops" class="section">
+      <div class="eyebrow" data-reveal>Opposition Tactics</div>
+      <h2 class="title" data-reveal>What We Counter</h2>
+      <p class="lead" data-reveal>How abusers try to evade accountability — and how Buraq AI is built to neutralize those tactics.</p>
+
+      <div class="ops-grid">
+        <article class="ops-card ops-card--wide" data-reveal>
+          <figure class="ops-media">
+            <img src="assets/hero-cctv.jpg" alt="Tampered CCTV camera in low light">
+          </figure>
+          <div class="ops-content">
+            <h3>Camera Tampering &amp; Blackouts</h3>
+            <p>Cut feeds, smash lenses, or kill power. Redundant sensing, local storage, and attested timestamps preserve evidence even during outages.</p>
+          </div>
+        </article>
+
+        <article class="ops-card" data-reveal>
+          <figure class="ops-media">
+            <img src="assets/drone-with-thermal-night-vision-view-of-terrorist-squad-walking-with-weapons.png" alt="Night movement under thermal view">
+          </figure>
+          <div class="ops-content">
+            <h3>RF Jamming &amp; GPS Spoofing</h3>
+            <p>Adversaries jam signals or spoof position. Edge autonomy and multi-sensor geotagging maintain trusted location context.</p>
+          </div>
+        </article>
+
+        <article class="ops-card ops-card--tall" data-reveal>
+          <figure class="ops-media">
+            <img src="assets/sar-thermal-drone.png" alt="Thermal masking in urban terrain">
+          </figure>
+          <div class="ops-content">
+            <h3>Thermal Masking</h3>
+            <p>Smoke, darkness, and thermal decoys. Multi-band detection and temporal tracking expose patterns attempts to hide.</p>
+          </div>
+        </article>
+
+        <article class="ops-card" data-reveal>
+          <figure class="ops-media">
+            <img src="assets/top-aerial-view-of-the-aircraft-graveyard-or-airplane-boneyard-in-arizona-united-states.png" alt="Abandoned equipment and decoy assets">
+          </figure>
+          <div class="ops-content">
+            <h3>Decoys &amp; Denial</h3>
+            <p>Throwaway sites and disguised assets. Cross-view correlation reduces false narratives and highlights material links.</p>
+          </div>
+        </article>
+
+        <article class="ops-card" data-reveal>
+          <figure class="ops-media">
+            <img src="assets/detectedevents.png" alt="On-device detection overlays">
+          </figure>
+          <div class="ops-content">
+            <h3>Metadata Stripping</h3>
+            <p>Images re-shared without EXIF to erase origin. Edge-side signatures, hashes, and logs preserve verifiable provenance.</p>
+          </div>
+        </article>
+
+        <article class="ops-card ops-card--wide" data-reveal>
+          <figure class="ops-media">
+            <img src="assets/dashboard.png" alt="Operational dashboard view">
+          </figure>
+          <div class="ops-content">
+            <h3>Coordinated Disinformation</h3>
+            <p>False reports flood channels to bury truth. Consensus signals and narrative-graphing surface credible, corroborated events.</p>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -208,7 +277,7 @@
       </ul>
     </section>
 
-    <!-- ===== NEW: STICKY STORY GALLERY ===== -->
+    <!-- STICKY STORY GALLERY -->
     <section id="gallery" class="section section--sticky">
       <div class="eyebrow" data-reveal>How it comes together</div>
       <h2 class="title" data-reveal>From the field to the courtroom</h2>
@@ -239,7 +308,7 @@
       </div>
     </section>
 
-    <!-- INSIGHTS (unchanged content, retains your accordions) -->
+    <!-- INSIGHTS -->
     <section id="field" class="section">
       <div class="eyebrow" data-reveal>Insights</div>
       <h2 class="title" data-reveal>Discover our system's role in protecting global human rights.</h2>
@@ -290,6 +359,9 @@
             <div>
               <p>Buraq AI benefits legal investigators, humanitarian organizations, journalists, and conflict-affected communities by providing real-time, verifiable documentation of human rights violations. It enables safer monitoring, stronger legal cases, and faster international response—even in areas inaccessible to humans. From the ICC to frontline NGOs, Buraq AI empowers those fighting for truth and accountability.</p>
             </div>
+          </div>
+        </article>
+      </div>
     </section>
 
     <!-- INQUIRIES -->
@@ -354,6 +426,7 @@
       <a href="#overview">Overview</a>
       <a href="#platform">Platform</a>
       <a href="#showcase">Showcase</a>
+      <a href="#ops">Opposition</a>
       <a href="#resources">Principles</a>
       <a href="#ethics">Ethics</a>
       <a href="#gallery">How it works</a>
