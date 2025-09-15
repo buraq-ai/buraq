@@ -207,7 +207,7 @@ a{color:inherit;text-decoration:none}
   background:#0a0d16;
   display:grid;
 }
-.slide.is-active{ opacity:1; transform:scale(1.) }
+.slide.is-active{ opacity:1; transform:scale(1.09) }
 .slide img{
   width:110%; height:110%;
   object-fit:cover; object-position:center;
@@ -391,7 +391,6 @@ a{color:inherit;text-decoration:none}
   transition: opacity .35s ease; /* keep a simple fade if you switch images */
 }
 
-}
 .gallery__img.is-on{ opacity:1; transform:scale(1) }
 .gallery__steps{ display:grid; gap:16px }
 
