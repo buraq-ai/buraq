@@ -1,30 +1,38 @@
-/* Year */
-document.getElementById('yr').textContent = new Date().getFullYear();
+// main.js (load with: <script type="module" src="main.js"></script>)
+'use strict';
 
-/* Panels */
+/* ---------- Year in footer ---------- */
+const yrEl = document.getElementById('yr');
+if (yrEl) yrEl.textContent = new Date().getFullYear();
+
+/* ---------- Panels (search & menu drawers) ---------- */
 const searchPanel = document.getElementById('searchPanel');
-const menuPanel = document.getElementById('menuPanel');
-const btnSearch = document.getElementById('btnSearch');
-const btnMenu = document.getElementById('btnMenu');
-const open = p => p.setAttribute('aria-hidden','false');
-const close = p => p.setAttribute('aria-hidden','true');
-btnSearch.addEventListener('click',()=>open(searchPanel));
-btnMenu.addEventListener('click',()=>open(menuPanel));
-document.querySelectorAll('[data-close="search"]').forEach(b=>b.addEventListener('click',()=>close(searchPanel)));
-document.querySelectorAll('[data-close="menu"]').forEach(b=>b.addEventListener('click',()=>close(menuPanel)));
+const menuPanel   = document.getElementById('menuPanel');
+const btnSearch   = document.getElementById('btnSearch');
+const btnMenu     = document.getElementById('btnMenu');
 
-/* Smooth section links */
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', e=>{
+const open  = (p) => p && p.setAttribute('aria-hidden','false');
+const close = (p) => p && p.setAttribute('aria-hidden','true');
+
+if (btnSearch) btnSearch.addEventListener('click', () => open(searchPanel));
+if (btnMenu)   btnMenu.addEventListener('click',   () => open(menuPanel));
+document.querySelectorAll('[data-close="search"]').forEach(b =>
+  b.addEventListener('click', () => close(searchPanel)));
+document.querySelectorAll('[data-close="menu"]').forEach(b =>
+  b.addEventListener('click', () => close(menuPanel)));
+
+/* ---------- Smooth section links ---------- */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
     const id = a.getAttribute('href');
-    if(id && id.length>1){
+    if (id && id.length > 1) {
       const t = document.querySelector(id);
-      if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); close(menuPanel); }
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); close(menuPanel); }
     }
   });
 });
 
-/* HERO: play video and reveal text after ~4.5s */
+/* ---------- Hero: play video & reveal text ---------- */
 (function heroGate(){
   const hero = document.getElementById('hero');
   if (!hero) return;
@@ -34,36 +42,38 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
     const p = vid.play(); if (p && typeof p.catch === 'function') p.catch(()=>{});
   }
   hero.classList.remove('hero--text-in');
-  setTimeout(()=> hero.classList.add('hero--text-in'), 4500);
+  setTimeout(() => hero.classList.add('hero--text-in'), 4500);
 })();
-// Reveal platform cards on scroll
+
+/* ---------- Reveal platform cards on scroll ---------- */
 const platformCards = document.querySelectorAll('.feature-card');
+if (platformCards.length) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // animate once
+      }
+    });
+  }, { threshold: 0.2 });
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target); // animate once
-    }
-  });
-}, { threshold: 0.2 });
+  platformCards.forEach(card => observer.observe(card));
+}
 
-platformCards.forEach(card => observer.observe(card));
-
-/* ---------- Overview Carousel (kept) ---------- */
+/* ---------- Overview Carousel ---------- */
 (function carousel(){
   const wrap = document.querySelector('#overview .carousel');
-  if(!wrap) return;
-  const track = wrap.querySelector('.car-track');
+  if (!wrap) return;
+  const track  = wrap.querySelector('.car-track');
   const slides = Array.from(track.querySelectorAll('.car-slide'));
-  const prev = wrap.querySelector('.car-prev');
-  const next = wrap.querySelector('.car-next');
-  const dots = wrap.querySelector('.car-dots');
+  const prev   = wrap.querySelector('.car-prev');
+  const next   = wrap.querySelector('.car-next');
+  const dots   = wrap.querySelector('.car-dots');
   const toggle = wrap.querySelector('.car-toggle');
   let i = 0, timer = null, playing = true;
 
   function setDot(n){
-    Array.from(dots.children).forEach((d,idx)=>d.setAttribute('aria-current', idx===n ? 'true':'false'));
+    Array.from(dots.children).forEach((d,idx)=>d.setAttribute('aria-current', idx===n ? 'true' : 'false'));
   }
   function go(n){
     slides[i].classList.remove('is-active');
@@ -86,22 +96,22 @@ platformCards.forEach(card => observer.observe(card));
   slides.forEach((_, idx)=>{
     const b = document.createElement('button');
     b.setAttribute('aria-label', `Go to slide ${idx+1}`);
-    if(idx===0) b.setAttribute('aria-current','true');
+    if (idx===0) b.setAttribute('aria-current','true');
     b.addEventListener('click', ()=>{ pause(); go(idx); });
     dots.appendChild(b);
   });
 
-  prev.addEventListener('click', ()=>{ pause(); go(i-1); });
-  next.addEventListener('click', ()=>{ pause(); go(i+1); });
+  if (prev)   prev.addEventListener('click', ()=>{ pause(); go(i-1); });
+  if (next)   next.addEventListener('click', ()=>{ pause(); go(i+1); });
   if (toggle) toggle.addEventListener('click', ()=> playing ? pause() : play());
 
   play();
 })();
 
-/* ---------- OPS: 3-up infinite carousel (right→left) ---------- */
+/* ---------- OPS: 3-up infinite carousel ---------- */
 (function opsCarousel(){
   const root = document.getElementById('opsCarousel');
-  if(!root) return;
+  if (!root) return;
 
   const track   = root.querySelector('.ops-track');
   const prevBtn = root.querySelector('.ops-arrow--prev');
@@ -122,11 +132,11 @@ platformCards.forEach(card => observer.observe(card));
   function stepSize(){ return cardWidth() + gapPx(); }
 
   function moveNext(){
-    if(animating) return;
+    if (animating) return;
     animating = true;
     const dx = -stepSize();
     track.style.transition = 'transform .6s cubic-bezier(.2,.7,.2,1)';
-    track.style.transform = `translateX(${dx}px)`;
+    track.style.transform  = `translateX(${dx}px)`;
     const onEnd = () => {
       track.removeEventListener('transitionend', onEnd);
       track.style.transition = 'none';
@@ -140,7 +150,7 @@ platformCards.forEach(card => observer.observe(card));
   }
 
   function movePrev(){
-    if(animating) return;
+    if (animating) return;
     animating = true;
     const dx = -stepSize();
     track.style.transition = 'none';
@@ -148,38 +158,84 @@ platformCards.forEach(card => observer.observe(card));
     track.style.transform = `translateX(${dx}px)`;
     requestAnimationFrame(()=>{
       track.style.transition = 'transform .6s cubic-bezier(.2,.7,.2,1)';
-      track.style.transform = 'translateX(0)';
-      track.addEventListener('transitionend', ()=>{ animating = false; }, {once:true});
+      track.style.transform  = 'translateX(0)';
+      track.addEventListener('transitionend', ()=>{ animating = false; }, { once:true });
     });
   }
 
-  let timer = setInterval(()=>{ if(!paused) moveNext(); }, speed);
+  let timer = setInterval(()=>{ if (!paused) moveNext(); }, speed);
 
   root.addEventListener('mouseenter', ()=> paused = true);
   root.addEventListener('mouseleave', ()=> paused = false);
-  nextBtn.addEventListener('click', ()=>{ paused = true; moveNext(); });
-  prevBtn.addEventListener('click', ()=>{ paused = true; movePrev(); });
+  if (nextBtn) nextBtn.addEventListener('click', ()=>{ paused = true; moveNext(); });
+  if (prevBtn) prevBtn.addEventListener('click', ()=>{ paused = true; movePrev(); });
 
   window.addEventListener('resize', ()=>{
     track.style.transition = 'none';
-    track.style.transform = 'translateX(0)';
+    track.style.transform  = 'translateX(0)';
     void track.offsetHeight;
     track.style.transition = 'transform .6s cubic-bezier(.2,.7,.2,1)';
   });
 })();
 
-/* ---------- Form feedback ---------- */
+/* ---------- Form submit → Firestore (REQUIRED CHANGE) ---------- */
 const form = document.getElementById('inqForm');
-if(form){
+if (form) {
   const msg = document.getElementById('formMsg');
-  form.addEventListener('submit', (e)=>{
+
+  function ui(status, text) {
+    if (!msg) return;
+    msg.textContent = text;
+    msg.style.color = status === 'ok' ? '#0a8043' : '#d22';
+  }
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if(!form.checkValidity()){
-      msg.textContent='Please complete required fields.'; msg.style.color='#d22';
-      form.reportValidity(); return;
+
+    // native HTML validation first
+    if (!form.checkValidity()) {
+      ui('err', 'Please complete required fields.');
+      form.reportValidity();
+      return;
     }
-    msg.textContent='Thanks — your inquiry has been submitted.'; msg.style.color='#0a8043';
-    form.reset();
-    // grecaptcha.reset(); // uncomment if needed
+
+    // ensure firebase-init.js is loaded and exposed
+    if (typeof window.saveInquiry !== 'function') {
+      console.error('[Main] saveInquiry not found on window');
+      ui('err', 'Internal error: Firebase not ready.');
+      return;
+    }
+
+    ui('ok', 'Sending…');
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    try {
+      const res = await window.saveInquiry({
+        firstName: data.firstName,
+        lastName:  data.lastName,
+        email:     data.email,
+        org:       data.org,
+        title:     data.title || '',
+        country:   data.country,
+        notes:     data.notes,
+        page:      location.href,
+      });
+
+      if (res?.ok) {
+        ui('ok', 'Thanks! Your inquiry was received.');
+        form.reset();
+        // If you use reCAPTCHA, you can reset here:
+        // if (window.grecaptcha) grecaptcha.reset();
+      } else {
+        console.error('[Main] saveInquiry error:', res?.error);
+        ui('err', `Submit failed: ${res?.error || 'unknown error'}`);
+      }
+    } catch (err) {
+      console.error('[Main] exception:', err);
+      ui('err', 'Unexpected error submitting form.');
+    }
   });
+} else {
+  console.warn('[Main] #inqForm not found');
 }

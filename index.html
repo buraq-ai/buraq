@@ -346,8 +346,10 @@
     </nav>
   </div>
 
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  <script type="module" src="firebase-init.js"></script>
-  <script src="main.js"></script>
+<!-- Keep this order, and make BOTH module scripts -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script type="module" src="firebase-init.js"></script>
+<script type="module" src="main.js"></script>
+
 </body>
 </html>

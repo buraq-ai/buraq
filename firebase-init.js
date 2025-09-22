@@ -5,14 +5,14 @@ import { getAnalytics, isSupported as analyticsIsSupported } from 'https://www.g
 
 // 🔧 Your Firebase config (from the Firebase console)
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBT1yoRjsG-mj0PVzIuyLnrbRvILe4S4rs",
+ apiKey: "AIzaSyBT1yoRjsG-mj0PVzIuyLnrbRvILe4S4rs",
   authDomain: "buraq-ai-2670c.firebaseapp.com",
   databaseURL: "https://buraq-ai-2670c-default-rtdb.firebaseio.com",
   projectId: "buraq-ai-2670c",
-  storageBucket: "buraq-ai-2670c.appspot.com", // typical default
+  storageBucket: "buraq-ai-2670c.firebasestorage.app",
   messagingSenderId: "910712236530",
-  appId: "1:910712236530:web:aec76191b384b6e90fe36b",
-  measurementId: "G-KTTLH4B6HG"
+  appId: "1:910712236530:web:9ad3566251dbf05e0fe36b",
+  measurementId: "G-P9RSTYSVT3"
 };
 
 let app, db;
