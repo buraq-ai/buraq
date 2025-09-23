@@ -652,3 +652,62 @@ img,video{max-width:100%; display:block}
 .hero__video {
   filter: brightness(0.85) contrast(1.05);
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+:root {
+  --nav-h: 72px; /* adjust to your nav height */
+}
+
+/* Applies to every section that can be anchored */
+section[id] {
+  scroll-margin-top: var(--nav-h);
+}
+.nav-links a {
+  white-space: nowrap;   /* keeps each link on one line */
+}
+.nav-links {
+  display: flex;
+  gap: 1.5rem;  /* adjust spacing between items */
+}
+
+.nav-links a {
+  line-height: 1;    /* keeps height stable */
+  display: inline-block;
+}
+/* Menu drawer panel */
+.panel__content--menu {
+  top: 64px;               /* same as nav height */
+  right: 0;
+  height: calc(100% - 64px);
+  width: min(420px, 86vw);
+  padding: 18px;
+  border-left: 1px solid var(--hair);
+  background: var(--card);
+}
+.panel__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: var(--card);
+  color: #2b3245;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.panel__close:hover {
+  background: #f3f5fb;
+  transform: scale(1.1);
+}
