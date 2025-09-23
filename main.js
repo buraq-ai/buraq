@@ -1,241 +1,223 @@
-// main.js (load with: <script type="module" src="main.js"></script>)
-'use strict';
+/* main.js (module)
+   - Hero text gate-in
+   - Sticky nav frosting past hero (robust across zoom)
+   - Overview carousel (now under the section)
+   - OPS 3-up arrows
+   - Panels (search/menu)
+   - Minor form niceties
+*/
 
-/* ---------- Year in footer ---------- */
-const yrEl = document.getElementById('yr');
-if (yrEl) yrEl.textContent = new Date().getFullYear();
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
-/* ---------- Panels (search & menu drawers) ---------- */
-const searchPanel = document.getElementById('searchPanel');
-const menuPanel   = document.getElementById('menuPanel');
-const btnSearch   = document.getElementById('btnSearch');
-const btnMenu     = document.getElementById('btnMenu');
+/* ===== Hero text in ===== */
+function gateHero() {
+  const hero = $('#hero');
+  const video = $('#introVid');
+  if (!hero || !video) return;
 
-const open  = (p) => p && p.setAttribute('aria-hidden','false');
-const close = (p) => p && p.setAttribute('aria-hidden','true');
-
-if (btnSearch) btnSearch.addEventListener('click', () => open(searchPanel));
-if (btnMenu)   btnMenu.addEventListener('click',   () => open(menuPanel));
-document.querySelectorAll('[data-close="search"]').forEach(b =>
-  b.addEventListener('click', () => close(searchPanel)));
-document.querySelectorAll('[data-close="menu"]').forEach(b =>
-  b.addEventListener('click', () => close(menuPanel)));
-
-/* ---------- Smooth section links ---------- */
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const id = a.getAttribute('href');
-    if (id && id.length > 1) {
-      const t = document.querySelector(id);
-      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); close(menuPanel); }
-    }
+  // Wait for the video to finish playing once
+  video.addEventListener('ended', () => {
+    hero.classList.add('hero--text-in');
   });
-});
 
-/* ---------- Hero: play video & reveal text ---------- */
-(function heroGate(){
-  const hero = document.getElementById('hero');
-  if (!hero) return;
-  const vid = hero.querySelector('.hero__video');
-  if (vid) {
-    vid.muted = true; vid.setAttribute('muted','');
-    const p = vid.play(); if (p && typeof p.catch === 'function') p.catch(()=>{});
-  }
-  hero.classList.remove('hero--text-in');
-  setTimeout(() => hero.classList.add('hero--text-in'), 4500);
-})();
-
-/* ---------- Reveal platform cards on scroll ---------- */
-const platformCards = document.querySelectorAll('.feature-card');
-if (platformCards.length) {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target); // animate once
-      }
-    });
-  }, { threshold: 0.2 });
-
-  platformCards.forEach(card => observer.observe(card));
+  // Fallback: if the video doesn't play or takes too long, show text after ~5s
+  setTimeout(() => {
+    if (!hero.classList.contains('hero--text-in')) {
+      hero.classList.add('hero--text-in');
+    }
+  }, 5100);
 }
 
-/* ---------- Overview Carousel ---------- */
-(function carousel(){
-  const wrap = document.querySelector('#overview .carousel');
+
+/* ===== Frost nav after hero ===== */
+function setupFrostNav() {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 1000) {
+      nav.classList.add('nav--frost');
+    } else {
+      nav.classList.remove('nav--frost');
+    }
+  });
+}
+
+
+
+/* ===== Simple carousel (Overview) ===== */
+function setupCarousel() {
+  const carousels = $$('.carousel');
+  carousels.forEach(carousel => {
+    const track = $('.car-track', carousel);
+    if (!track) return;
+
+    const slides = $$('.car-slide', track);
+    const prev = $('.car-prev', carousel);
+    const next = $('.car-next', carousel);
+    const dotsWrap = $('.car-dots', carousel);
+    const autoplay = carousel.dataset.autoplay === 'true';
+    let i = slides.findIndex(s => s.classList.contains('is-active'));
+    if (i < 0) i = 0;
+
+    // Build dots
+    const dots = slides.map((_, idx) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', `Go to slide ${idx+1}`);
+      if (idx === i) b.setAttribute('aria-current', 'true');
+      b.addEventListener('click', () => go(idx));
+      dotsWrap.appendChild(b);
+      return b;
+    });
+
+    function go(n) {
+      slides[i].classList.remove('is-active');
+      dots[i].removeAttribute('aria-current');
+      i = (n + slides.length) % slides.length;
+      slides[i].classList.add('is-active');
+      dots[i].setAttribute('aria-current', 'true');
+    }
+    function nextSlide(){ go(i+1) }
+    function prevSlide(){ go(i-1) }
+
+    next?.addEventListener('click', nextSlide);
+    prev?.addEventListener('click', prevSlide);
+
+    let t;
+    function start(){
+      if (!autoplay) return;
+      stop();
+      t = setInterval(nextSlide, 5000);
+    }
+    function stop(){
+      if (t) clearInterval(t);
+    }
+
+    // Pause on hover for desktop
+    track.addEventListener('mouseenter', stop);
+    track.addEventListener('mouseleave', start);
+
+    // Start
+    start();
+  });
+}
+
+/* ===== OPS true infinite carousel (endless + pause on hover/arrows) ===== */
+function setupOpsCarousel() {
+  const wrap = document.getElementById('opsCarousel');
   if (!wrap) return;
-  const track  = wrap.querySelector('.car-track');
-  const slides = Array.from(track.querySelectorAll('.car-slide'));
-  const prev   = wrap.querySelector('.car-prev');
-  const next   = wrap.querySelector('.car-next');
-  const dots   = wrap.querySelector('.car-dots');
-  const toggle = wrap.querySelector('.car-toggle');
-  let i = 0, timer = null, playing = true;
 
-  function setDot(n){
-    Array.from(dots.children).forEach((d,idx)=>d.setAttribute('aria-current', idx===n ? 'true' : 'false'));
-  }
-  function go(n){
-    slides[i].classList.remove('is-active');
-    i = (n + slides.length) % slides.length;
-    slides[i].classList.add('is-active');
-    setDot(i);
-  }
-  function play(){
-    if (timer) clearInterval(timer);
-    playing = true;
-    timer = setInterval(()=>go(i+1), 4500);
-    if (toggle) toggle.setAttribute('aria-pressed','true');
-  }
-  function pause(){
-    playing = false;
-    clearInterval(timer);
-    if (toggle) toggle.setAttribute('aria-pressed','false');
-  }
+  const viewport = wrap.querySelector('.ops-viewport');
+  const track = wrap.querySelector('.ops-track');
+  const prev = wrap.querySelector('.ops-arrow--prev');
+  const next = wrap.querySelector('.ops-arrow--next');
 
-  slides.forEach((_, idx)=>{
-    const b = document.createElement('button');
-    b.setAttribute('aria-label', `Go to slide ${idx+1}`);
-    if (idx===0) b.setAttribute('aria-current','true');
-    b.addEventListener('click', ()=>{ pause(); go(idx); });
-    dots.appendChild(b);
-  });
+  const gap = parseFloat(getComputedStyle(track).gap) || 16;
+  const cards = Array.from(track.children);
+  const cardCount = cards.length;
 
-  if (prev)   prev.addEventListener('click', ()=>{ pause(); go(i-1); });
-  if (next)   next.addEventListener('click', ()=>{ pause(); go(i+1); });
-  if (toggle) toggle.addEventListener('click', ()=> playing ? pause() : play());
+  // Clone all cards twice (before and after)
+  cards.forEach(card => track.appendChild(card.cloneNode(true)));
+  cards.forEach(card => track.insertBefore(card.cloneNode(true), track.firstChild));
 
-  play();
-})();
+  const allCards = Array.from(track.children);
+  let cardW = allCards[0].getBoundingClientRect().width + gap;
 
-/* ---------- OPS: 3-up infinite carousel ---------- */
-(function opsCarousel(){
-  const root = document.getElementById('opsCarousel');
-  if (!root) return;
+  // Start centered on the original set
+  let index = cardCount;
+  track.style.transform = `translateX(${-index * cardW}px)`;
 
-  const track   = root.querySelector('.ops-track');
-  const prevBtn = root.querySelector('.ops-arrow--prev');
-  const nextBtn = root.querySelector('.ops-arrow--next');
+  function go(dir) {
+    index += dir;
+    track.style.transition = 'transform 0.6s ease';
+    track.style.transform = `translateX(${-index * cardW}px)`;
 
-  const speed = Number(root.dataset.speed || 2800);
-  let animating = false;
-  let paused = false;
-
-  function gapPx(){
-    const g = getComputedStyle(track).gap || '0px';
-    return parseFloat(g) || 0;
-  }
-  function cardWidth(){
-    const first = track.children[0];
-    return first.getBoundingClientRect().width;
-  }
-  function stepSize(){ return cardWidth() + gapPx(); }
-
-  function moveNext(){
-    if (animating) return;
-    animating = true;
-    const dx = -stepSize();
-    track.style.transition = 'transform .6s cubic-bezier(.2,.7,.2,1)';
-    track.style.transform  = `translateX(${dx}px)`;
-    const onEnd = () => {
-      track.removeEventListener('transitionend', onEnd);
+    track.addEventListener('transitionend', () => {
       track.style.transition = 'none';
-      track.appendChild(track.firstElementChild);
-      track.style.transform = 'translateX(0)';
-      void track.offsetHeight; // reflow
-      track.style.transition = 'transform .6s cubic-bezier(.2,.7,.2,1)';
-      animating = false;
-    };
-    track.addEventListener('transitionend', onEnd);
-  }
-
-  function movePrev(){
-    if (animating) return;
-    animating = true;
-    const dx = -stepSize();
-    track.style.transition = 'none';
-    track.insertBefore(track.lastElementChild, track.firstElementChild);
-    track.style.transform = `translateX(${dx}px)`;
-    requestAnimationFrame(()=>{
-      track.style.transition = 'transform .6s cubic-bezier(.2,.7,.2,1)';
-      track.style.transform  = 'translateX(0)';
-      track.addEventListener('transitionend', ()=>{ animating = false; }, { once:true });
-    });
-  }
-
-  let timer = setInterval(()=>{ if (!paused) moveNext(); }, speed);
-
-  root.addEventListener('mouseenter', ()=> paused = true);
-  root.addEventListener('mouseleave', ()=> paused = false);
-  if (nextBtn) nextBtn.addEventListener('click', ()=>{ paused = true; moveNext(); });
-  if (prevBtn) prevBtn.addEventListener('click', ()=>{ paused = true; movePrev(); });
-
-  window.addEventListener('resize', ()=>{
-    track.style.transition = 'none';
-    track.style.transform  = 'translateX(0)';
-    void track.offsetHeight;
-    track.style.transition = 'transform .6s cubic-bezier(.2,.7,.2,1)';
-  });
-})();
-
-/* ---------- Form submit → Firestore (REQUIRED CHANGE) ---------- */
-const form = document.getElementById('inqForm');
-if (form) {
-  const msg = document.getElementById('formMsg');
-
-  function ui(status, text) {
-    if (!msg) return;
-    msg.textContent = text;
-    msg.style.color = status === 'ok' ? '#0a8043' : '#d22';
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // native HTML validation first
-    if (!form.checkValidity()) {
-      ui('err', 'Please complete required fields.');
-      form.reportValidity();
-      return;
-    }
-
-    // ensure firebase-init.js is loaded and exposed
-    if (typeof window.saveInquiry !== 'function') {
-      console.error('[Main] saveInquiry not found on window');
-      ui('err', 'Internal error: Firebase not ready.');
-      return;
-    }
-
-    ui('ok', 'Sending…');
-
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    try {
-      const res = await window.saveInquiry({
-        firstName: data.firstName,
-        lastName:  data.lastName,
-        email:     data.email,
-        org:       data.org,
-        title:     data.title || '',
-        country:   data.country,
-        notes:     data.notes,
-        page:      location.href,
-      });
-
-      if (res?.ok) {
-        ui('ok', 'Thanks! Your inquiry was received.');
-        form.reset();
-        // If you use reCAPTCHA, you can reset here:
-        // if (window.grecaptcha) grecaptcha.reset();
-      } else {
-        console.error('[Main] saveInquiry error:', res?.error);
-        ui('err', `Submit failed: ${res?.error || 'unknown error'}`);
+      if (index >= cardCount * 2) {
+        index -= cardCount;
+        track.style.transform = `translateX(${-index * cardW}px)`;
       }
-    } catch (err) {
-      console.error('[Main] exception:', err);
-      ui('err', 'Unexpected error submitting form.');
-    }
+      if (index < cardCount) {
+        index += cardCount;
+        track.style.transform = `translateX(${-index * cardW}px)`;
+      }
+    }, { once: true });
+  }
+
+  prev?.addEventListener('click', () => go(-1));
+  next?.addEventListener('click', () => go(1));
+
+  // Autoplay setup
+  const speed = parseInt(wrap.dataset.speed, 10) || 2800;
+  let timer;
+
+  function start() {
+    stop();
+    timer = setInterval(() => go(1), speed);
+  }
+  function stop() {
+    if (timer) clearInterval(timer);
+  }
+
+  // Pause on hover over viewport OR arrow buttons
+  [viewport, prev, next].forEach(el => {
+    el.addEventListener('mouseenter', stop);
+    el.addEventListener('mouseleave', start);
   });
-} else {
-  console.warn('[Main] #inqForm not found');
+
+  window.addEventListener('resize', () => {
+    cardW = allCards[0].getBoundingClientRect().width + gap;
+    track.style.transition = 'none';
+    track.style.transform = `translateX(${-index * cardW}px)`;
+  });
+
+  start(); // begin autoplay
 }
+
+/* ===== Panels (search/menu) ===== */
+function setupPanels() {
+  const searchPanel = $('#searchPanel');
+  const menuPanel = $('#menuPanel');
+
+  $('#btnSearch')?.addEventListener('click', () => {
+    searchPanel?.setAttribute('aria-hidden', 'false');
+    $('#siteSearch')?.focus();
+  });
+  $('#btnMenu')?.addEventListener('click', () => {
+    menuPanel?.setAttribute('aria-hidden', 'false');
+  });
+
+  $$('[data-close="search"]').forEach(el =>
+    el.addEventListener('click', () => searchPanel?.setAttribute('aria-hidden', 'true'))
+  );
+  $$('[data-close="menu"]').forEach(el =>
+    el.addEventListener('click', () => menuPanel?.setAttribute('aria-hidden', 'true'))
+  );
+}
+
+/* ===== Form basics ===== */
+function setupForm() {
+  const yr = $('#yr');
+  if (yr) yr.textContent = new Date().getFullYear();
+
+  const form = $('#inqForm');
+  const msg = $('#formMsg');
+  if (!form) return;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    msg.textContent = 'Thanks — we’ll get back to you shortly.';
+  }, false);
+}
+
+/* ===== Init ===== */
+window.addEventListener('DOMContentLoaded', () => {
+  gateHero();
+  setupFrostNav();      // keeps nav visible + frosts after hero
+  setupCarousel();      // overview slideshow (now under the section)
+  setupOpsCarousel();   // 3-up scroller arrows
+  setupPanels();        // search/menu
+  setupForm();
+});

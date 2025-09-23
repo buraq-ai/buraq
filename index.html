@@ -62,7 +62,7 @@
 
       <div class="hero__inner hero__inner--center">
         <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
-        <h1 class="hero__title">AI-powered ISR for Human Rights Defense</h1>
+        <h1 class="hero__title">AI-Powered ISR for Human Rights Defense</h1>
         <p class="sub">The first ISR platform built for protecting civilians and prosecuting abusers.</p>
         <div class="cta-row">
           <a class="btn btn--ghost" href="#overview">More Info</a>
@@ -80,11 +80,21 @@
       <div class="hero__vignette" aria-hidden="true"></div>
     </header>
 
-    <!-- ===== OVERVIEW (existing slideshow) ===== -->
+    <!-- ===== OVERVIEW ===== -->
     <section id="overview" class="container section">
-      <div class="carousel" data-autoplay="true">
+      <!-- Detection to Deterrence FIRST -->
+      <h2 class="xl" style="margin-top:28px;">From Detection to Deterrence: A New Era of Human Rights Oversight</h2>
+      <div class="cards-4">
+        <article class="card"><h3>Autonomous Visual Surveillance</h3><p>Deploy edge-based drones equipped with real-time AI vision to capture, geotag, and verify war crimes—even where connectivity fails and witnesses are silenced.</p></article>
+        <article class="card"><h3>Predictive AI for Early Intervention</h3><p>Use multilingual NLP to scan, classify, and escalate warning signs—turning fragmented reports into predictive intelligence that prevents atrocities before they unfold.</p></article>
+        <article class="card"><h3>Edge-Deployment in War Zones</h3><p>Ensure uninterrupted monitoring through edge-based AI kits designed to function without internet, stable power, or human oversight.</p></article>
+        <article class="card"><h3>Legal Evidence Engine</h3><p>Produce time-stamped, geo-verified data automatically labeled to meet standards set by the ICC, UNHRC, and UDHR.</p></article>
+      </div>
+
+      <!-- ⬇️ Slideshow UNDER the section -->
+      <div class="carousel" data-autoplay="true" style="margin-top:24px;">
         <button class="car-btn car-prev" aria-label="Previous slide">‹</button>
-        <div class="car-track">
+        <div class="car-track car-frame">
           <figure class="car-slide is-active">
             <img src="assets/detectedevents.png" alt="Real-time detection overlays">
             <figcaption>Real-time detection &amp; tracking on constrained devices.</figcaption>
@@ -109,14 +119,6 @@
         <button class="car-btn car-next" aria-label="Next slide">›</button>
         <div class="car-dots" role="tablist"></div>
         <button class="car-toggle" aria-pressed="true" aria-label="Pause autoplay"></button>
-      </div>
-
-      <h2 class="xl" style="margin-top:28px;">From Detection to Deterrence: A New Era of Human Rights Oversight</h2>
-      <div class="cards-4">
-        <article class="card"><h3>Autonomous Visual Surveillance</h3><p>Deploy edge-based drones equipped with real-time AI vision to capture, geotag, and verify war crimes—even where connectivity fails and witnesses are silenced.</p></article>
-        <article class="card"><h3>Predictive AI for Early Intervention</h3><p>Use multilingual NLP to scan, classify, and escalate warning signs—turning fragmented reports into predictive intelligence that prevents atrocities before they unfold.</p></article>
-        <article class="card"><h3>Edge-Deployment in War Zones</h3><p>Ensure uninterrupted monitoring through edge-based AI kits designed to function without internet, stable power, or human oversight.</p></article>
-        <article class="card"><h3>Legal Evidence Engine</h3><p>Produce time-stamped, geo-verified data automatically labeled to meet standards set by the ICC, UNHRC, and UDHR.</p></article>
       </div>
     </section>
 
@@ -176,31 +178,31 @@
       </div>
     </section>
 
-<!-- ===== PLATFORM ===== -->
-<section id="platform" class="container section">
-  <h2 class="xl">Deployable Anywhere</h2>
-  <p class="lead">Run Buraq AI on low-power edge clusters anywhere, anytime.</p>
+    <!-- ===== PLATFORM ===== -->
+    <section id="platform" class="container section">
+      <h2 class="xl">Deployable Anywhere</h2>
+      <p class="lead">Run Buraq AI on low-power edge clusters anywhere, anytime.</p>
 
-  <div class="platform-cards-vertical">
-    <article class="feature-card">
-      <h3>Resilience</h3>
-      <p class="summary">Deploy and operate under low connectivity, high risk conditions.</p>
-      <p class="details">Built for offline resilience in warzones, disaster zones, and jammed networks. Buraq AI is engineered to keep running where traditional systems collapse.</p>
-    </article>
+      <div class="platform-cards-vertical">
+        <article class="feature-card">
+          <h3>Resilience</h3>
+          <p class="summary">Deploy and operate under low connectivity, high risk conditions.</p>
+          <p class="details">Built for offline resilience in warzones, disaster zones, and jammed networks. Buraq AI is engineered to keep running where traditional systems collapse.</p>
+        </article>
 
-    <article class="feature-card">
-      <h3>Predictive analysis</h3>
-      <p class="summary">Classify early-warning signals from diverse sources.</p>
-      <p class="details">From drone feeds, social chatter, comms intercepts, and local reports—Buraq AI anticipates threats before they escalate, giving decision-makers more time to act.</p>
-    </article>
+        <article class="feature-card">
+          <h3>Predictive analysis</h3>
+          <p class="summary">Classify early-warning signals from diverse sources.</p>
+          <p class="details">From drone feeds, social chatter, comms intercepts, and local reports—Buraq AI anticipates threats before they escalate, giving decision-makers more time to act.</p>
+        </article>
 
-    <article class="feature-card">
-      <h3>Global reach</h3>
-      <p class="summary">Turning surveillance into global resistance.</p>
-      <p class="details">From frontline villages to international courts, Buraq AI transforms raw field intelligence into verifiable evidence, driving accountability on a global scale.</p>
-    </article>
-  </div>
-</section>
+        <article class="feature-card">
+          <h3>Global reach</h3>
+          <p class="summary">Turning surveillance into global resistance.</p>
+          <p class="details">From frontline villages to international courts, Buraq AI transforms raw field intelligence into verifiable evidence, driving accountability on a global scale.</p>
+        </article>
+      </div>
+    </section>
 
     <!-- 3D MODEL STAGE -->
     <section class="container section">
@@ -210,7 +212,7 @@
           <h2 class="xl">Edge Module Preview</h2>
           <p class="muted">High-level model render demonstrating key components and data flow.</p>
         </div>
-        <figure class="stage__media">
+        <figure class="stage__media media-16x9">
           <img src="assets/model.gif" alt="3D model preview" loading="lazy">
         </figure>
       </div>
@@ -241,7 +243,7 @@
     <section id="gallery" class="container section">
       <h2 class="xl">From the field to the courtroom</h2>
       <div class="gallery">
-        <figure class="gallery__vis"><img class="gallery__img" src="assets/dashboard.png" alt=""></figure>
+        <figure class="gallery__vis media-1x1"><img class="gallery__img" src="assets/dashboard.png" alt=""></figure>
         <div class="gallery__steps">
           <article class="step card"><h3>1) Capture &amp; Verify</h3><p>Trusted timestamping, geotagging, and sensor attestation at the edge.</p></article>
           <article class="step card"><h3>2) Structure the Narrative</h3><p>Multilingual NLP turns disparate reports into cohesive incident timelines.</p></article>
@@ -346,10 +348,10 @@
     </nav>
   </div>
 
-<!-- Keep this order, and make BOTH module scripts -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-<script type="module" src="firebase-init.js"></script>
-<script type="module" src="main.js"></script>
+  <!-- Keep this order, and make BOTH module scripts -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script type="module" src="firebase-init.js"></script>
+  <script type="module" src="main.js"></script>
 
 </body>
 </html>

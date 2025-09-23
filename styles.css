@@ -106,7 +106,7 @@ img,video{max-width:100%; display:block}
 .hero__video{
   width:min(90vw, 900px);
   max-height:80vh;
-  height:75;
+  height:auto; /* FIX: was 75, causing weirdness */
   object-fit:contain;
   margin:0 auto;
 }
@@ -165,7 +165,7 @@ img,video{max-width:100%; display:block}
   justify-content:center;
   text-align:center;
   gap:8px;
-  margin: clamp(240px, 10vh, 40px) auto 0; /* push it down */
+  margin: clamp(280px, 10vh, 60px) auto 0; /* push it down */
   width:fit-content;
   color:#fff;
   opacity:.9;
@@ -207,12 +207,17 @@ img,video{max-width:100%; display:block}
 .carousel{position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:8px; align-items:center}
 .car-track{
   position:relative; overflow:hidden; background:var(--card); border:1px solid var(--hair);
-  border-radius: 28px; box-shadow: var(--shadow); min-height: 420px;
+  border-radius: 28px; box-shadow: var(--shadow);
+  /* old min-height removed in favor of aspect box below */
 }
+.car-frame{ aspect-ratio: 16 / 9; } /* stable height across zoom */
 .car-slide{position:absolute; inset:0; opacity:0; transform:translateX(6px) scale(.98); transition:.5s}
 .car-slide.is-active{opacity:1; transform:none}
-.car-slide img{width:100%; height: calc(420px + 12vw); max-height:640px; object-fit:cover; border-bottom:1px solid var(--hair)}
-.car-slide figcaption{padding:12px 16px; color:#495065}
+.car-slide img{width:100%; height:100%; object-fit:cover; display:block}
+.car-slide figcaption{
+  position:absolute; left:0; right:0; bottom:0; padding:12px 16px; color:#fff;
+  background:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.55) 70%);
+}
 .car-btn{
   width:44px; height:44px; display:grid; place-items:center; border-radius:12px; background:var(--card); border:1px solid var(--hair); cursor:pointer;
 }
@@ -238,7 +243,7 @@ img,video{max-width:100%; display:block}
 
 .gallery{display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
 .gallery__vis{border:1px solid var(--hair); background:var(--card); border-radius: var(--radius); overflow:hidden}
-.gallery__img{width:100%; height:min(70vh,720px); object-fit:cover}
+.gallery__img{width:100%; height:100%; object-fit:cover}
 .gallery__steps{display:grid; gap:16px}
 @media (max-width:980px){.gallery{grid-template-columns:1fr}}
 
@@ -403,11 +408,11 @@ img,video{max-width:100%; display:block}
 
 /* ===== Overview Carousel (unchanged) ===== */
 .carousel{position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:8px; align-items:center}
-.car-track{ position:relative; overflow:hidden; background:var(--card); border:1px solid var(--hair); border-radius: 28px; box-shadow: var(--shadow); min-height: 420px; }
+.car-track{ position:relative; overflow:hidden; background:var(--card); border:1px solid var(--hair); border-radius: 28px; box-shadow: var(--shadow); }
 .car-slide{position:absolute; inset:0; opacity:0; transform:translateX(6px) scale(.98); transition:.5s}
 .car-slide.is-active{opacity:1; transform:none}
 .car-slide img{width:100%; height: calc(420px + 12vw); max-height:640px; object-fit:cover; border-bottom:1px solid var(--hair)}
-.car-slide figcaption{padding:12px 16px; color:#495065}
+.car-slide figcaption{padding:12px 16px; color:#ffffff; font-weight: bold}
 .car-btn{ width:44px; height:44px; display:grid; place-items:center; border-radius:12px; background:var(--card); border:1px solid var(--hair); cursor:pointer; }
 .car-dots{display:flex; gap:8px; justify-content:center; margin-top:10px}
 .car-dots button{width:8px; height:8px; border-radius:999px; border:none; background:#c9cfdb; opacity:.8; cursor:pointer}
@@ -464,7 +469,7 @@ img,video{max-width:100%; display:block}
 
 /* Small tweaks you had */
 .hero__title{ font-size: clamp(2.2rem, 5.6vw, 4.8rem); line-height:.92; letter-spacing:.5px; }
-.hero__inner{ top:170px; }
+.hero__inner{ top:230px; }
 
 /* Overview carousel width cap (your request) */
 .carousel{ max-width: 1000px; margin: 0 auto; }
@@ -545,11 +550,10 @@ img,video{max-width:100%; display:block}
   width: 100%;
   height: 100%;
   max-height: none;
-  object-fit: contain;    /* use 'cover' if you prefer edge-to-edge (will crop) */
+  object-fit: cover; /* unified with aspect box for stability */
   border-bottom: 0;
   display: block;
 }
-
 
 /* Reset figure margin so no padding space shows */
 .ops-card__media {
@@ -562,9 +566,9 @@ img,video{max-width:100%; display:block}
 .ops-card__media img {
   display: block;
   width: 100%;
-  height: 220px;        /* or auto if you want it flexible */
-  object-fit: cover;    /* ensures it crops instead of squeezing */
-  border-radius: 0;     /* remove rounding inside the card */
+  height: 220px;
+  object-fit: cover;
+  border-radius: 0;
 }
 
 /* Vertical stacked cards */
@@ -616,8 +620,35 @@ img,video{max-width:100%; display:block}
 
 /* Reveal details smoothly */
 .feature-card:hover .details {
-  max-height: 400px;   /* enough room for text */
+  max-height: 400px;
   opacity: 1;
   margin-top: 12px;
 }
 
+/* ===== Additions for zoom-stable media ===== */
+.media-16x9{ position:relative; aspect-ratio:16/9; overflow:hidden; }
+.media-1x1 { position:relative; aspect-ratio:1/1;  overflow:hidden; }
+.media-16x9 > img, .media-1x1 > img{ width:100%; height:100%; object-fit:cover; object-position:center; }
+
+/* ===== Frosted nav background AFTER hero ===== */
+.nav--frost{
+  background: rgba(255,255,255,.78);
+  border-color: rgba(0,0,0,.06);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+}
+@media (prefers-reduced-transparency: reduce){
+  .nav--frost{ background:#fff; backdrop-filter:none; -webkit-backdrop-filter:none; }
+}
+.nav-wrap {
+  position: fixed;   /* was sticky */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 3px 0;
+}
+
+.hero__video {
+  filter: brightness(0.85) contrast(1.05);
+}
