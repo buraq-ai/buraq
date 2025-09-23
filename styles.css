@@ -165,7 +165,7 @@ img,video{max-width:100%; display:block}
   justify-content:center;
   text-align:center;
   gap:8px;
-  margin: clamp(280px, 10vh, 60px) auto 0; /* push it down */
+  margin: clamp(230px, 10vh, 60px) auto 0; /* push it down */
   width:fit-content;
   color:#fff;
   opacity:.9;
@@ -386,7 +386,7 @@ img,video{max-width:100%; display:block}
 .hero.hero--text-in .hero__title{ animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) .18s forwards }
 .hero.hero--text-in .sub{ animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) .32s forwards }
 .hero.hero--text-in .cta-row{ animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) .48s forwards }
-.scroll-indicator{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; margin: clamp(280px, 10vh, 20px) auto 0; width:fit-content; color:#fff; opacity:.9; animation: scrollFloat 2.6s ease-in-out infinite;}
+.scroll-indicator{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; margin: clamp(220px, 10vh, 20px) auto 0; width:fit-content; color:#fff; opacity:.9; animation: scrollFloat 2.6s ease-in-out infinite;}
 @keyframes scrollFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 
 /* ===== Cards / tiles (unchanged) ===== */

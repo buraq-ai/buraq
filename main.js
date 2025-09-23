@@ -26,7 +26,7 @@ function gateHero() {
     if (!hero.classList.contains('hero--text-in')) {
       hero.classList.add('hero--text-in');
     }
-  }, 5100);
+  }, 4600);
 }
 
 
