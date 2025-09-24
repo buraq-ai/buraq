@@ -188,23 +188,67 @@ function setupOpsCarousel() {
 
 /* ===== Panels (search/menu) ===== */
 function setupPanels() {
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
   const searchPanel = $('#searchPanel');
-  const menuPanel = $('#menuPanel');
+  const menuPanel   = $('#menuPanel');
+  const btnSearch   = $('#btnSearch');
+  const btnMenu     = $('#btnMenu');
+  const siteSearch  = $('#siteSearch');
 
-  $('#btnSearch')?.addEventListener('click', () => {
-    searchPanel?.setAttribute('aria-hidden', 'false');
-    $('#siteSearch')?.focus();
-  });
-  $('#btnMenu')?.addEventListener('click', () => {
-    menuPanel?.setAttribute('aria-hidden', 'false');
+  const isOpen = el => el && el.getAttribute('aria-hidden') === 'false';
+  const open   = el => el && el.setAttribute('aria-hidden', 'false');
+  const close  = el => el && el.setAttribute('aria-hidden', 'true');
+
+  let rafOpen = null;
+  const openAfterClose = (el) => {
+    if (rafOpen) cancelAnimationFrame(rafOpen), (rafOpen = null);
+    // Double rAF so the close fully commits before we open the other panel.
+    rafOpen = requestAnimationFrame(() => {
+      rafOpen = requestAnimationFrame(() => {
+        open(el);
+        if (el === searchPanel && siteSearch) siteSearch.focus();
+        rafOpen = null;
+      });
+    });
+  };
+
+  // Stop clicks inside panels from hitting the backdrop
+  $('.panel__content--search')?.addEventListener('click', e => e.stopPropagation());
+  $('.panel__content--menu')?.addEventListener('click',   e => e.stopPropagation());
+
+  // SEARCH toggle
+  btnSearch?.addEventListener('click', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (isOpen(searchPanel)) { close(searchPanel); return; }
+    if (isOpen(menuPanel)) { close(menuPanel); openAfterClose(searchPanel); }
+    else { open(searchPanel); siteSearch?.focus(); }
   });
 
+  // MENU toggle
+  btnMenu?.addEventListener('click', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (isOpen(menuPanel)) { close(menuPanel); return; }
+    if (isOpen(searchPanel)) { close(searchPanel); openAfterClose(menuPanel); }
+    else { open(menuPanel); }
+  });
+
+  // Close via backdrop/X
   $$('[data-close="search"]').forEach(el =>
-    el.addEventListener('click', () => searchPanel?.setAttribute('aria-hidden', 'true'))
+    el.addEventListener('click', (e) => { e.preventDefault(); close(searchPanel); })
   );
   $$('[data-close="menu"]').forEach(el =>
-    el.addEventListener('click', () => menuPanel?.setAttribute('aria-hidden', 'true'))
+    el.addEventListener('click', (e) => { e.preventDefault(); close(menuPanel); })
   );
+
+  // Esc closes whichever is open
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      close(searchPanel);
+      close(menuPanel);
+    }
+  });
 }
 
 /* ===== Form basics ===== */
@@ -229,4 +273,111 @@ window.addEventListener('DOMContentLoaded', () => {
   setupOpsCarousel();   // 3-up scroller arrows
   setupPanels();        // search/menu
   setupForm();
+});
+// Inline nav search toggle (non-breaking: falls back to panel if slot missing)
+(function(){
+  const navSlot = document.querySelector('.nav-inline-search');
+  const input   = document.getElementById('navSearch');
+  const btn     = document.getElementById('btnSearch');
+  if (!btn) return;
+
+  // If the slot exists, use it; otherwise your old overlay keeps working
+  btn.addEventListener('click', (e) => {
+    if (!navSlot || !input) return;     // fall back to whatever you had before
+    e.preventDefault();
+    const open = navSlot.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => input.focus(), 150);
+  });
+
+  // Close on outside click / ESC
+  document.addEventListener('click', (e) => {
+    if (!navSlot?.classList.contains('is-open')) return;
+    if (!navSlot.contains(e.target) && e.target !== btn) {
+      navSlot.classList.remove('is-open');
+      btn.setAttribute('aria-expanded','false');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navSlot?.classList.contains('is-open')) {
+      navSlot.classList.remove('is-open');
+      btn.setAttribute('aria-expanded','false');
+      input?.blur();
+    }
+  });
+})();
+// === Principles Expander (clean version) ===
+(() => {
+  const wrap = document.querySelector('#resources .principles-expander');
+  if (!wrap) return;
+
+  // initial reveal when in view
+  wrap.dataset.in = 'false';
+  const panes = wrap.querySelectorAll('.pane');
+  panes.forEach((p, i) => p.style.transitionDelay = `${i * 70}ms`);
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        wrap.dataset.in = 'true';
+        io.disconnect();
+      }
+    });
+  }, { threshold: 0.2 });
+  io.observe(wrap);
+
+  // expand/contract on click with proper aria state
+  panes.forEach((pane) => {
+    const btn = pane.querySelector('.pane__hit');
+    btn.addEventListener('click', () => {
+      panes.forEach(p => {
+        p.classList.remove('is-active');
+        p.querySelector('.pane__hit').setAttribute('aria-expanded', 'false');
+      });
+      pane.classList.add('is-active');
+      btn.setAttribute('aria-expanded', 'true');
+    });
+
+    // keyboard activation
+    btn.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        btn.click();
+      }
+    });
+  });
+})();
+// Resources: mark in-view once so the fill/reveal runs
+(() => {
+  const section = document.querySelector('#resources');
+  if (!section) return;
+  const io = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      section.classList.add('in-view');
+      io.disconnect();
+    }
+  }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+  io.observe(section);
+})();
+// Replay-on-hover for ethics chips
+document.querySelectorAll('.eth-chip').forEach(chip => {
+  const v = chip.querySelector('video');
+  if (!v) return;
+
+  chip.addEventListener('mouseenter', () => {
+    try {
+      v.currentTime = 0;
+      v.play();
+    } catch {}
+  });
+
+  chip.addEventListener('mouseleave', () => {
+    try { v.pause(); } catch {}
+  });
+});
+document.querySelectorAll('.eth-chip').forEach(chip => {
+  const v = chip.querySelector('video');
+  if (!v) return;
+  chip.addEventListener('mouseenter', () => { try { v.currentTime = 0; v.play(); } catch {} });
+  chip.addEventListener('mouseleave', () => { try { v.pause(); } catch {} });
 });

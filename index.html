@@ -30,8 +30,13 @@
         <a href="#resources">Principles</a>
         <a href="#ethics">Ethics</a>
         <a href="#gallery">How it works</a>
-        <a href="#faq">Inquiries</a>
+        <a href="#faq">Insights</a>
       </div>
+
+<!-- Inline search lives in the empty middle span -->
+<div class="nav-inline-search" aria-hidden="true">
+  <input id="navSearch" type="search" placeholder="Search…" autocomplete="off" />
+</div>
 
       <div class="nav-actions">
         <a class="btn btn--outline" href="#contact">Get Started</a>
@@ -47,39 +52,43 @@
 
   <main>
     <!-- ===== HERO (reverted: black + centered animation) ===== -->
-    <header class="hero" role="banner" id="hero">
-      <div class="hero__anim-wrap" aria-hidden="true">
-        <video
-          class="hero__video"
-          id="introVid"
-          src="assets/buraq-animation.mp4"
-          poster="assets/hero-cctv.jpg"
-          playsinline
-          muted
-          autoplay
-          preload="auto"
-        ></video>
-      </div>
+    <!-- ===== HERO (black + centered animation) ===== -->
+<header class="hero" role="banner" id="hero">
+  <div class="hero__anim-wrap" aria-hidden="true">
+    <video
+      class="hero__video"
+      id="introVid"
+      src="assets/buraq-animation.mp4"
+      poster="assets/hero-cctv.jpg"
+      playsinline
+      muted
+      autoplay
+      preload="auto"
+    ></video>
+  </div>
 
-      <div class="hero__inner hero__inner--center">
-        <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
-        <h1 class="hero__title">AI-Powered ISR for Human Rights Defense</h1>
-        <p class="sub">The first ISR platform built for protecting civilians and prosecuting abusers.</p>
-        <div class="cta-row">
-          <a class="btn btn--ghost" href="#overview">More Info</a>
-          <a class="btn btn--primary" href="#contact">Get Started</a>
-        </div>
+  <!-- ✅ Keep this wrapper; it controls spacing + text reveal -->
+  <div class="hero__inner hero__inner--center">
+    <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
+    <h1 class="hero__title">AI-Powered ISR for Human Rights Defense</h1>
+    <p class="sub">The first ISR platform built for protecting civilians and prosecuting abusers.</p>
 
-        <div class="scroll-indicator" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22">
-            <path d="M12 16.5 5.5 10l1.4-1.4L12 13.7l5.1-5.1L18.5 10 12 16.5Z" fill="currentColor"/>
-          </svg>
-          <span>Explore Our Mission</span>
-        </div>
-      </div>
+    <div class="cta-row">
+      <a class="btn btn--ghost" href="#overview">More Info</a>
+      <a class="btn btn--primary" href="#contact">Get Started</a>
+    </div>
 
-      <div class="hero__vignette" aria-hidden="true"></div>
-    </header>
+    <div class="scroll-indicator" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M12 16.5 5.5 10l1.4-1.4L12 13.7l5.1-5.1L18.5 10 12 16.5Z" fill="currentColor"/>
+      </svg>
+      <span>Explore Our Mission</span>
+    </div>
+  </div>
+
+  <div class="hero__vignette" aria-hidden="true"></div>
+</header>
+
 
     <!-- ===== OVERVIEW ===== -->
     <section id="overview" class="container section">
@@ -233,12 +242,40 @@
 
     <!-- ETHICS -->
     <section id="ethics" class="container section">
-      <h2 class="xl">Accountability by Design. Justice by Code.</h2>
-      <p class="lead">Buraq AI empowers civilians, not armies—capturing war crimes and predicting atrocities where traditional defense fails.</p>
-      <ul class="chips">
-        <li>AI-driven</li><li>Non-Lethal defense</li><li>Conflict monitoring</li><li>Ethical surveillance</li>
-      </ul>
-    </section>
+  <h2 class="xl">Accountability by Design. Justice by Code.</h2>
+  <p class="lead">Buraq AI empowers civilians, not armies—capturing war crimes and predicting atrocities where traditional defense fails.</p>
+
+  <div class="eth-chips">
+    <div class="eth-chip">
+      <div class="eth-chip__label">AI-driven</div>
+      <div class="eth-chip__panel">
+        <video class="eth-chip__video" muted loop playsinline preload="metadata" src="assets/ethics-ai.mp4"></video>
+      </div>
+    </div>
+
+    <div class="eth-chip">
+      <div class="eth-chip__label">Non-Lethal defense</div>
+      <div class="eth-chip__panel">
+        <video class="eth-chip__video" muted loop playsinline preload="metadata" src="assets/non-lethal.mp4"></video>
+      </div>
+    </div>
+
+    <div class="eth-chip">
+      <div class="eth-chip__label">Conflict monitoring</div>
+      <div class="eth-chip__panel">
+        <video class="eth-chip__video" muted loop playsinline preload="metadata" src="assets/monitoring.mp4"></video>
+      </div>
+    </div>
+
+    <div class="eth-chip">
+      <div class="eth-chip__label">Ethical surveillance</div>
+      <div class="eth-chip__panel">
+        <video class="eth-chip__video" muted loop playsinline preload="metadata" src="assets/gifs/ethical.mp4"></video>
+      </div>
+    </div>
+  </div>
+</section>
+
 
     <!-- GALLERY -->
     <section id="gallery" class="container section">
@@ -329,16 +366,6 @@
       </nav>
     </footer>
   </main>
-
-  <!-- Search overlay -->
-  <div id="searchPanel" class="panel" aria-hidden="true">
-    <div class="panel__backdrop" data-close="search"></div>
-    <div class="panel__content panel__content--search" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
-      <button class="icon-btn panel__close" data-close="search" aria-label="Close search">✕</button>
-      <h3 id="searchTitle" class="sr-only">Search</h3>
-      <input type="search" id="siteSearch" placeholder="Search…" autocomplete="off" />
-    </div>
-  </div>
 
   <!-- Menu drawer -->
   <div id="menuPanel" class="panel" aria-hidden="true">

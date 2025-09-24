@@ -263,7 +263,6 @@ img,video{max-width:100%; display:block}
 .panel[aria-hidden="false"]{display:block}
 .panel__backdrop{position:absolute; inset:0; background: rgba(0,0,0,.25)}
 .panel__content{position:absolute; background:var(--card); color:var(--ink)}
-.panel__content--search{inset:10% 50% auto 50%; transform:translateX(-50%); width:min(720px, 92vw); padding:18px; border:1px solid var(--hair); border-radius:16px}
 .panel__content--menu{top:0; right:0; height:100%; width:min(420px, 86vw); padding:18px; border-left:1px solid var(--hair)}
 .panel__close{position:absolute; top:10px; right:10px}
 
@@ -386,7 +385,7 @@ img,video{max-width:100%; display:block}
 .hero.hero--text-in .hero__title{ animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) .18s forwards }
 .hero.hero--text-in .sub{ animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) .32s forwards }
 .hero.hero--text-in .cta-row{ animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) .48s forwards }
-.scroll-indicator{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; margin: clamp(220px, 10vh, 20px) auto 0; width:fit-content; color:#fff; opacity:.9; animation: scrollFloat 2.6s ease-in-out infinite;}
+.scroll-indicator{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; margin: clamp(170px, 10vh, 20px) auto 0; width:fit-content; color:#fff; opacity:.9; animation: scrollFloat 2.6s ease-in-out infinite;}
 @keyframes scrollFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 
 /* ===== Cards / tiles (unchanged) ===== */
@@ -710,4 +709,117 @@ section[id] {
 .panel__close:hover {
   background: #f3f5fb;
   transform: scale(1.1);
+}
+
+/* Uses the existing empty stretch between links and actions */
+.nav-inline-search{
+  flex: 1;                          /* fills the gap without pushing anything */
+  display: flex;
+  justify-content: center;          /* keep it centered in the empty area */
+  align-items: center;
+  min-width: 0;
+  pointer-events: none;             /* ignore clicks until opened */
+}
+
+/* Collapsed by default (no layout shift) */
+.nav-inline-search input{
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+  height: 38px;                     /* matches your icon buttons */
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  background: #fff;
+  padding: 0 12px;
+  font: inherit;
+  color: var(--ink);
+  box-shadow: inset 0 1px 2px rgba(10,12,18,.04);
+  transition: width .25s ease, opacity .15s ease;
+}
+
+/* Only when open */
+.nav-inline-search.is-open input{
+  width: min(640px, 60vw);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#btnSearch[aria-expanded="true"]{ background:#f3f5fb; }
+@media (max-width:1024px){ .nav-inline-search{ display:none; } }
+/* Visual reorder of nav actions (no DOM changes) */
+.nav-actions { display: flex; gap: .5rem; align-items: center; }
+.nav-actions > #btnSearch { order: 1 !important; }                /* search left */
+.nav-actions > a.btn.btn--outline { order: 2 !important; }        /* Get Started */
+.nav-actions > #btnMenu { order: 3 !important; }                  /* hamburger */
+/* Keep the menu drawer and its backdrop below the fixed nav bar */
+#menuPanel .panel__content--menu { top: var(--nav-h); height: calc(100% - var(--nav-h)); }
+#menuPanel .panel__backdrop     { top: var(--nav-h); }
+/* === ETHICS chips — baseline (no scaling) === */
+.eth-chips{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+@media (max-width:1000px){ .eth-chips{ grid-template-columns:1fr 1fr; } }
+@media (max-width:640px){  .eth-chips{ grid-template-columns:1fr; } }
+
+.eth-chip{
+  background:var(--card);
+  border:1px solid var(--hair);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:12px 14px;
+  overflow:hidden;                 /* contains the reveal */
+  transition: box-shadow .25s ease, border-color .25s ease;
+}
+.eth-chip:hover{
+  border-color:var(--hair-2);      /* optional tiny polish */
+  box-shadow:0 12px 28px rgba(10,12,18,.14);
+}
+
+.eth-chip__label{
+  font-weight:700;
+  color:var(--ink);
+  line-height:1.2;
+}
+
+/* Hidden panel that reveals smoothly on hover */
+.eth-chip__panel{
+  max-height:0;
+  opacity:0;
+  transform:translateY(-4px);
+  margin:0;
+  transition:
+    max-height .45s cubic-bezier(.2,.7,.2,1),
+    opacity .25s ease .08s,
+    transform .45s cubic-bezier(.2,.7,.2,1);
+}
+.eth-chip:hover .eth-chip__panel{
+  max-height:180px;               /* reveal height (fits a small video) */
+  opacity:1;
+  transform:translateY(0);
+  margin-top:10px;
+}
+
+.eth-chip__video{
+  width:100%;
+  height:160px;
+  display:block;
+  object-fit:cover;
+  border-radius:12px;
+  background:#000;
+}
+/* Keep non-hovered chips the same size */
+.eth-chips{
+  align-items: start;      /* prevents other chips from stretching to match tallest */
+}
+
+.eth-chip{
+  align-self: start;       /* each chip keeps its own natural height */
+}
+
+/* (optional) slightly snappier reveal without affecting others */
+.eth-chip__panel{
+  will-change: max-height, transform, opacity;
 }
