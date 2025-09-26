@@ -754,72 +754,18 @@ section[id] {
 /* Keep the menu drawer and its backdrop below the fixed nav bar */
 #menuPanel .panel__content--menu { top: var(--nav-h); height: calc(100% - var(--nav-h)); }
 #menuPanel .panel__backdrop     { top: var(--nav-h); }
-/* === ETHICS chips — baseline (no scaling) === */
-.eth-chips{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-top:14px;
+#droneCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 16px;
+  background: #0b0d12; /* fallback background */
 }
-@media (max-width:1000px){ .eth-chips{ grid-template-columns:1fr 1fr; } }
-@media (max-width:640px){  .eth-chips{ grid-template-columns:1fr; } }
-
-.eth-chip{
-  background:var(--card);
-  border:1px solid var(--hair);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-  padding:12px 14px;
-  overflow:hidden;                 /* contains the reveal */
-  transition: box-shadow .25s ease, border-color .25s ease;
-}
-.eth-chip:hover{
-  border-color:var(--hair-2);      /* optional tiny polish */
-  box-shadow:0 12px 28px rgba(10,12,18,.14);
-}
-
-.eth-chip__label{
-  font-weight:700;
-  color:var(--ink);
-  line-height:1.2;
-}
-
-/* Hidden panel that reveals smoothly on hover */
-.eth-chip__panel{
-  max-height:0;
-  opacity:0;
-  transform:translateY(-4px);
-  margin:0;
-  transition:
-    max-height .45s cubic-bezier(.2,.7,.2,1),
-    opacity .25s ease .08s,
-    transform .45s cubic-bezier(.2,.7,.2,1);
-}
-.eth-chip:hover .eth-chip__panel{
-  max-height:180px;               /* reveal height (fits a small video) */
-  opacity:1;
-  transform:translateY(0);
-  margin-top:10px;
-}
-
-.eth-chip__video{
-  width:100%;
-  height:160px;
-  display:block;
-  object-fit:cover;
-  border-radius:12px;
-  background:#000;
-}
-/* Keep non-hovered chips the same size */
-.eth-chips{
-  align-items: start;      /* prevents other chips from stretching to match tallest */
-}
-
-.eth-chip{
-  align-self: start;       /* each chip keeps its own natural height */
-}
-
-/* (optional) slightly snappier reveal without affecting others */
-.eth-chip__panel{
-  will-change: max-height, transform, opacity;
+/* 3D stage canvas sizing */
+#droneCanvas{
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #0b0d12;   /* subtle dark behind the transparent renderer */
+  border-radius: 16px;
 }

@@ -33,10 +33,10 @@
         <a href="#faq">Insights</a>
       </div>
 
-<!-- Inline search lives in the empty middle span -->
-<div class="nav-inline-search" aria-hidden="true">
-  <input id="navSearch" type="search" placeholder="Search…" autocomplete="off" />
-</div>
+      <!-- Inline search lives in the empty middle span -->
+      <div class="nav-inline-search" aria-hidden="true">
+        <input id="navSearch" type="search" placeholder="Search…" autocomplete="off" />
+      </div>
 
       <div class="nav-actions">
         <a class="btn btn--outline" href="#contact">Get Started</a>
@@ -51,48 +51,44 @@
   </header>
 
   <main>
-    <!-- ===== HERO (reverted: black + centered animation) ===== -->
-    <!-- ===== HERO (black + centered animation) ===== -->
-<header class="hero" role="banner" id="hero">
-  <div class="hero__anim-wrap" aria-hidden="true">
-    <video
-      class="hero__video"
-      id="introVid"
-      src="assets/buraq-animation.mp4"
-      poster="assets/hero-cctv.jpg"
-      playsinline
-      muted
-      autoplay
-      preload="auto"
-    ></video>
-  </div>
+    <!-- ===== HERO ===== -->
+    <header class="hero" role="banner" id="hero">
+      <div class="hero__anim-wrap" aria-hidden="true">
+        <video
+          class="hero__video"
+          id="introVid"
+          src="assets/buraq-animation.mp4"
+          poster="assets/hero-cctv.jpg"
+          playsinline
+          muted
+          autoplay
+          preload="auto"
+        ></video>
+      </div>
 
-  <!-- ✅ Keep this wrapper; it controls spacing + text reveal -->
-  <div class="hero__inner hero__inner--center">
-    <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
-    <h1 class="hero__title">AI-Powered ISR for Human Rights Defense</h1>
-    <p class="sub">The first ISR platform built for protecting civilians and prosecuting abusers.</p>
+      <div class="hero__inner hero__inner--center">
+        <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
+        <h1 class="hero__title">AI-Powered ISR for Human Rights Defense</h1>
+        <p class="sub">The first ISR platform built for protecting civilians and prosecuting abusers.</p>
 
-    <div class="cta-row">
-      <a class="btn btn--ghost" href="#overview">More Info</a>
-      <a class="btn btn--primary" href="#contact">Get Started</a>
-    </div>
+        <div class="cta-row">
+          <a class="btn btn--ghost" href="#overview">More Info</a>
+          <a class="btn btn--primary" href="#contact">Get Started</a>
+        </div>
 
-    <div class="scroll-indicator" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-        <path d="M12 16.5 5.5 10l1.4-1.4L12 13.7l5.1-5.1L18.5 10 12 16.5Z" fill="currentColor"/>
-      </svg>
-      <span>Explore Our Mission</span>
-    </div>
-  </div>
+        <div class="scroll-indicator" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path d="M12 16.5 5.5 10l1.4-1.4L12 13.7l5.1-5.1L18.5 10 12 16.5Z" fill="currentColor"/>
+          </svg>
+          <span>Explore Our Mission</span>
+        </div>
+      </div>
 
-  <div class="hero__vignette" aria-hidden="true"></div>
-</header>
-
+      <div class="hero__vignette" aria-hidden="true"></div>
+    </header>
 
     <!-- ===== OVERVIEW ===== -->
     <section id="overview" class="container section">
-      <!-- Detection to Deterrence FIRST -->
       <h2 class="xl" style="margin-top:28px;">From Detection to Deterrence: A New Era of Human Rights Oversight</h2>
       <div class="cards-4">
         <article class="card"><h3>Autonomous Visual Surveillance</h3><p>Deploy edge-based drones equipped with real-time AI vision to capture, geotag, and verify war crimes—even where connectivity fails and witnesses are silenced.</p></article>
@@ -101,7 +97,6 @@
         <article class="card"><h3>Legal Evidence Engine</h3><p>Produce time-stamped, geo-verified data automatically labeled to meet standards set by the ICC, UNHRC, and UDHR.</p></article>
       </div>
 
-      <!-- ⬇️ Slideshow UNDER the section -->
       <div class="carousel" data-autoplay="true" style="margin-top:24px;">
         <button class="car-btn car-prev" aria-label="Previous slide">‹</button>
         <div class="car-track car-frame">
@@ -132,7 +127,7 @@
       </div>
     </section>
 
-    <!-- ===== OPPOSITION (NEW 3-up infinite carousel) ===== -->
+    <!-- ===== OPPOSITION ===== -->
     <section id="ops" class="container section">
       <h2 class="xl">What We Counter</h2>
       <p class="lead">How abusers try to evade accountability — and how Buraq AI is built to neutralize those tactics.</p>
@@ -214,21 +209,21 @@
       </div>
     </section>
 
-    <!-- 3D MODEL STAGE -->
+    <!-- ===== 3D MODEL STAGE ===== -->
     <section id="model" class="container section">
       <div class="stage">
         <div class="stage__head">
           <p class="eyebrow">3D System View</p>
           <h2 class="xl">Edge Module Preview</h2>
-          <p class="muted">High-level model render demonstrating key components and data flow.</p>
+          <p class="muted">Interact with the drone model — zoom, rotate, and pan.</p>
         </div>
         <figure class="stage__media media-16x9">
-          <img src="assets/model.gif" alt="3D model preview" loading="lazy">
+          <canvas id="droneCanvas"></canvas>
         </figure>
       </div>
     </section>
 
-    <!-- PRINCIPLES -->
+    <!-- ===== PRINCIPLES ===== -->
     <section id="resources" class="slab">
       <div class="container section">
         <h2 class="xl">Challenging the Old “Defense” Model</h2>
@@ -240,44 +235,16 @@
       </div>
     </section>
 
-    <!-- ETHICS -->
+    <!-- ===== ETHICS ===== -->
     <section id="ethics" class="container section">
-  <h2 class="xl">Accountability by Design. Justice by Code.</h2>
-  <p class="lead">Buraq AI empowers civilians, not armies—capturing war crimes and predicting atrocities where traditional defense fails.</p>
+      <h2 class="xl">Accountability by Design. Justice by Code.</h2>
+      <p class="lead">Buraq AI empowers civilians, not armies—capturing war crimes and predicting atrocities where traditional defense fails.</p>
+      <ul class="chips">
+        <li>AI-driven</li><li>Non-Lethal defense</li><li>Conflict monitoring</li><li>Ethical surveillance</li>
+      </ul>
+    </section>
 
-  <div class="eth-chips">
-    <div class="eth-chip">
-      <div class="eth-chip__label">AI-driven</div>
-      <div class="eth-chip__panel">
-        <video class="eth-chip__video" muted loop playsinline preload="metadata" src="assets/ethics-ai.mp4"></video>
-      </div>
-    </div>
-
-    <div class="eth-chip">
-      <div class="eth-chip__label">Non-Lethal defense</div>
-      <div class="eth-chip__panel">
-        <video class="eth-chip__video" muted loop playsinline preload="metadata" src="assets/non-lethal.mp4"></video>
-      </div>
-    </div>
-
-    <div class="eth-chip">
-      <div class="eth-chip__label">Conflict monitoring</div>
-      <div class="eth-chip__panel">
-        <video class="eth-chip__video" muted loop playsinline preload="metadata" src="assets/monitoring.mp4"></video>
-      </div>
-    </div>
-
-    <div class="eth-chip">
-      <div class="eth-chip__label">Ethical surveillance</div>
-      <div class="eth-chip__panel">
-        <video class="eth-chip__video" muted loop playsinline preload="metadata" src="assets/gifs/ethical.mp4"></video>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-    <!-- GALLERY -->
+    <!-- ===== GALLERY ===== -->
     <section id="gallery" class="container section">
       <h2 class="xl">From the field to the courtroom</h2>
       <div class="gallery">
@@ -291,7 +258,7 @@
       </div>
     </section>
 
-     <!-- ===== FAQ (NEW) ===== -->
+    <!-- ===== FAQ ===== -->
     <section id="faq" class="container section">
       <h2 class="xl">Insights</h2>
       <p class="lead">Discover our system's role in protecting global human rights.</p>
@@ -327,8 +294,7 @@
       </div>
     </section>
 
-
-    <!-- CONTACT -->
+    <!-- ===== CONTACT ===== -->
     <section id="contact" class="slab">
       <div class="container section">
         <h2 class="xl">Connect With Us</h2>
@@ -353,7 +319,7 @@
       </div>
     </section>
 
-    <!-- FOOTER -->
+    <!-- ===== FOOTER ===== -->
     <footer class="container footer">
       <div class="foot__brand">
         <img src="assets/buraq-logo.png" alt="" width="26" height="26">
@@ -383,10 +349,31 @@
     </nav>
   </div>
 
-  <!-- Keep this order, and make BOTH module scripts -->
+  <!-- Keep this order -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <script type="module" src="firebase-init.js"></script>
   <script type="module" src="main.js"></script>
 
+ <section id="model" class="container section">
+  <div class="stage">
+    <h2>3D Drone Preview (Large Demo)</h2>
+    <p>This model may take a moment to load due to size.</p>
+    <figure class="stage__media media-16x9">
+      <canvas id="droneCanvas"></canvas>
+    </figure>
+  </div>
+</section>
+
+ <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- Only one include of your app script -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
