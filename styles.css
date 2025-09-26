@@ -766,6 +766,6 @@ section[id] {
   width: 100%;
   height: 100%;
   display: block;
-  background: #0b0d12;   /* subtle dark behind the transparent renderer */
+  background: #424347;   /* subtle dark behind the transparent renderer */
   border-radius: 16px;
 }
