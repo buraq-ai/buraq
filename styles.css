@@ -769,3 +769,40 @@ section[id] {
   background: #424347;   /* subtle dark behind the transparent renderer */
   border-radius: 16px;
 }
+.drone-ui {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(15, 15, 15, 0.8);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.drone-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drone-selector select {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+.drone-selector select:hover {
+  border-color: #4d4a4a;
+}
