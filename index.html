@@ -1,352 +1,28 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Home | Buraq AI</title>
-    <link rel="icon" type="image/png" sizes="80x80" href="assets/buraq-tab.png">
-    <meta name="description" content="Buraq AI: The first ISR platform built for protecting civilians and prosecuting abusers. From detection to deterrence for human rights oversight." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body id="top">
-    <div class="page-bg" aria-hidden="true"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home | Buraq AI</title>
+  <link rel="icon" type="image/png" sizes="80x80" href="assets/buraq-tab.png">
+  <meta name="description" content="Buraq AI: The first ISR platform built for protecting civilians and prosecuting abusers. From detection to deterrence for human rights oversight." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body id="top">
+  <div class="page-bg" aria-hidden="true"></div>
 
-    <!-- NAV (Palantir-style tray) -->
-    <header class="nav-wrap">
-      <nav class="nav" role="navigation" aria-label="Main">
-        <a class="brand" href="#top" aria-label="Buraq AI – Home">
-          <img src="assets/buraq-horse.png" alt="" width="50" height="50" />
-          <span>Buraq AI</span>
-        </a>
+  <!-- NAV (Palantir-style tray) -->
+  <header class="nav-wrap">
+    <nav class="nav" role="navigation" aria-label="Main">
+      <a class="brand" href="#top" aria-label="Buraq AI – Home">
+        <img src="assets/buraq-horse.png" alt="" width="50" height="50" />
+        <span>Buraq AI</span>
+      </a>
 
-        <div class="nav-links">
-          <a href="#overview">Overview</a>
-          <a href="#ops">Opposition</a>
-          <a href="#platform">Platform</a>
-          <a href="#model">3D Model</a>
-          <a href="#resources">Principles</a>
-          <a href="#ethics">Ethics</a>
-          <a href="#gallery">How it works</a>
-          <a href="#faq">Insights</a>
-        </div>
-
-        <!-- Inline search lives in the empty middle span -->
-        <div class="nav-inline-search" aria-hidden="true">
-          <input id="navSearch" type="search" placeholder="Search…" autocomplete="off" />
-        </div>
-
-        <div class="nav-actions">
-          <a class="btn btn--outline" href="#contact">Get Started</a>
-          <button id="btnSearch" class="icon-btn" aria-label="Search" title="Search">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 0 1 5.83 12.27l4.2 4.2-1.42 1.41-4.2-4.2A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 .001 11.001A5.5 5.5 0 0 0 10.5 5Z" fill="currentColor"/></svg>
-          </button>
-          <button id="btnMenu" class="icon-btn" aria-label="Open menu" aria-haspopup="dialog" aria-controls="menuPanel">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h16v2H4v-2Z" fill="currentColor"/></svg>
-          </button>
-        </div>
-      </nav>
-    </header>
-
-    <main>
-      <!-- ===== HERO ===== -->
-      <header class="hero" role="banner" id="hero">
-        <div class="hero__anim-wrap" aria-hidden="true">
-          <video
-            class="hero__video"
-            id="introVid"
-            src="assets/buraq-animation.mp4"
-            poster="assets/hero-cctv.jpg"
-            playsinline
-            muted
-            autoplay
-            preload="auto"
-          ></video>
-        </div>
-
-        <div class="hero__inner hero__inner--center">
-          <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
-          <h1 class="hero__title">AI-Powered ISR for Human Rights Defense</h1>
-          <p class="sub">The first ISR platform built for protecting civilians and prosecuting abusers.</p>
-
-          <div class="cta-row">
-            <a class="btn btn--ghost" href="#overview">More Info</a>
-            <a class="btn btn--primary" href="#contact">Get Started</a>
-          </div>
-
-          <div class="scroll-indicator" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-              <path d="M12 16.5 5.5 10l1.4-1.4L12 13.7l5.1-5.1L18.5 10 12 16.5Z" fill="currentColor"/>
-            </svg>
-            <span>Explore Our Mission</span>
-          </div>
-        </div>
-
-        <div class="hero__vignette" aria-hidden="true"></div>
-      </header>
-
-      <!-- ===== OVERVIEW ===== -->
-      <section id="overview" class="container section">
-        <h2 class="xl" style="margin-top:28px;">From Detection to Deterrence: A New Era of Human Rights Oversight</h2>
-        <div class="cards-4">
-          <article class="card"><h3>Autonomous Visual Surveillance</h3><p>Deploy edge-based drones equipped with real-time AI vision to capture, geotag, and verify war crimes—even where connectivity fails and witnesses are silenced.</p></article>
-          <article class="card"><h3>Predictive AI for Early Intervention</h3><p>Use multilingual NLP to scan, classify, and escalate warning signs—turning fragmented reports into predictive intelligence that prevents atrocities before they unfold.</p></article>
-          <article class="card"><h3>Edge-Deployment in War Zones</h3><p>Ensure uninterrupted monitoring through edge-based AI kits designed to function without internet, stable power, or human oversight.</p></article>
-          <article class="card"><h3>Legal Evidence Engine</h3><p>Produce time-stamped, geo-verified data automatically labeled to meet standards set by the ICC, UNHRC, and UDHR.</p></article>
-        </div>
-
-        <div class="carousel" data-autoplay="true" style="margin-top:24px;">
-          <button class="car-btn car-prev" aria-label="Previous slide">‹</button>
-          <div class="car-track car-frame">
-            <figure class="car-slide is-active">
-              <img src="assets/detectedevents.png" alt="Real-time detection overlays">
-              <figcaption>Real-time detection &amp; tracking on constrained devices.</figcaption>
-            </figure>
-            <figure class="car-slide">
-              <img src="assets/drone-with-thermal-night-vision-view-of-terrorist-squad-walking-with-weapons.png" alt="Thermal night surveillance">
-              <figcaption>Self-contained edge clusters for offline autonomy.</figcaption>
-            </figure>
-            <figure class="car-slide">
-              <img src="assets/sar-thermal-drone.png" alt="Thermal aerial reconnaissance">
-              <figcaption>Urban documentation with tamper-evident chain of custody.</figcaption>
-            </figure>
-            <figure class="car-slide">
-              <img src="assets/top-aerial-view-of-the-aircraft-graveyard-or-airplane-boneyard-in-arizona-united-states.png" alt="Aerial operations">
-              <figcaption>Rapid mobile deployments from vehicles to rooftop hubs.</figcaption>
-            </figure>
-            <figure class="car-slide">
-              <img src="assets/tile-health.jpg" alt="Humanitarian corridors">
-              <figcaption>Protecting civilians and humanitarian corridors.</figcaption>
-            </figure>
-          </div>
-          <button class="car-btn car-next" aria-label="Next slide">›</button>
-          <div class="car-dots" role="tablist"></div>
-          <button class="car-toggle" aria-pressed="true" aria-label="Pause autoplay"></button>
-        </div>
-      </section>
-
-      <!-- ===== OPPOSITION ===== -->
-      <section id="ops" class="container section">
-        <h2 class="xl">What We Counter</h2>
-        <p class="lead">How abusers try to evade accountability — and how Buraq AI is built to neutralize those tactics.</p>
-
-        <div class="ops-carousel" id="opsCarousel" data-speed="2800">
-          <button class="ops-arrow ops-arrow--prev" aria-label="Previous slide">‹</button>
-
-          <div class="ops-viewport">
-            <ul class="ops-track">
-              <li class="ops-card">
-                <figure class="ops-card__media"><img src="assets/th.png" alt="Tampered CCTV"></figure>
-                <div class="ops-card__body">
-                  <h3>Missile &amp; Rocket Launch Tracking</h3>
-                  <p>Automatically detect, geolocate, and track launches from land, sea, or air — with predicted impact zones rendered live on the tactical map.</p>
-                </div>
-              </li>
-
-              <li class="ops-card">
-                <figure class="ops-card__media"><img src="assets/swarm-of-drones-flying-at-dusk-a-group-of-drones-hovering-in-the-sky-at-dusk-showcasing.png" alt="Swarm drones"></figure>
-                <div class="ops-card__body">
-                  <h3>Drone Swarm Coordination</h3>
-                  <p>Monitor and command multiple surveillance drones simultaneously, with AI-assisted battery management, signal loss prediction, and fallback routing over beseiged zones.</p>
-                </div>
-              </li>
-
-              <li class="ops-card">
-                <figure class="ops-card__media"><img src="assets/sar-thermal-drone.png" alt="Thermal urban"></figure>
-                <div class="ops-card__body">
-                  <h3>Infantry &amp; Vehicle Heat Tagging</h3>
-                  <p>Uses onboard edge-AI models to identify armed units, tanks, or patrol convoys moving through rubble, tunnels, or dense urban terrain—day or night.</p>
-                </div>
-              </li>
-
-              <li class="ops-card">
-                <figure class="ops-card__media"><img src="assets/360_F_496212234_jRF6uGgwIT763c9PS8ydHggNUCWLYOqT.png" alt="Decoys"></figure>
-                <div class="ops-card__body">
-                  <h3>Live Sector Alert Feed + Fusion Warnings</h3>
-                  <p>Consolidates alerts from multiple sources into a centralized threat feed, prioritized by severity and augmented by pattern-matching fusion AI.</p>
-                </div>
-              </li>
-
-              <li class="ops-card">
-                <figure class="ops-card__media"><img src="assets/detectedevents.png" alt="On-device detection"></figure>
-                <div class="ops-card__body">
-                  <h3>Offline Intelligence Node Deployment</h3>
-                  <p>Operates in communications denied regions using Kubernetes powered edge modules, synchronizing later when uplink is restored. No cloud required.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          <button class="ops-arrow ops-arrow--next" aria-label="Next slide">›</button>
-        </div>
-      </section>
-
-      <!-- ===== PLATFORM ===== -->
-      <section id="platform" class="container section">
-        <h2 class="xl">Deployable Anywhere</h2>
-        <p class="lead">Run Buraq AI on low-power edge clusters anywhere, anytime.</p>
-
-        <div class="platform-cards-vertical">
-          <article class="feature-card">
-            <h3>Resilience</h3>
-            <p class="summary">Deploy and operate under low connectivity, high risk conditions.</p>
-            <p class="details">Built for offline resilience in warzones, disaster zones, and jammed networks. Buraq AI is engineered to keep running where traditional systems collapse.</p>
-          </article>
-
-          <article class="feature-card">
-            <h3>Predictive analysis</h3>
-            <p class="summary">Classify early-warning signals from diverse sources.</p>
-            <p class="details">From drone feeds, social chatter, comms intercepts, and local reports—Buraq AI anticipates threats before they escalate, giving decision-makers more time to act.</p>
-          </article>
-
-          <article class="feature-card">
-            <h3>Global reach</h3>
-            <p class="summary">Turning surveillance into global resistance.</p>
-            <p class="details">From frontline villages to international courts, Buraq AI transforms raw field intelligence into verifiable evidence, driving accountability on a global scale.</p>
-          </article>
-        </div>
-      </section>
-
-      <!-- ===== 3D MODEL STAGE ===== -->
-      <section id="model" class="container section">
-        <div class="stage">
-          <div class="stage__head">
-            <p class="eyebrow">3D System View</p>
-            <h2 class="xl">Edge Module Preview</h2>
-            <p class="muted">Interact with the drone model — zoom, rotate, and pan.</p>
-          </div>
-  <figure class="stage__media media-16x9" style="position:relative;">
-    <div class="drone-ui">
-      <label class="drone-selector">
-        <span>Currently viewing:</span>
-        <select id="droneSelect">
-        <option value="drone1.glb" selected>Al-Warda</option>
-        <option value="drone2.glb">Al-Miraj</option>
-      </select>
-
-      </label>
-    </div>
-    <canvas id="droneCanvas"></canvas>
-  </figure>
-
-
-      <!-- ===== PRINCIPLES ===== -->
-      <section id="resources" class="slab">
-        <div class="container section">
-          <h2 class="xl">Challenging the Old “Defense” Model</h2>
-          <div class="tiles-3">
-            <div class="tile"><h3>Protective Intelligence</h3><p>Data intelligence to protect the innocent, not to target them.</p></div>
-            <div class="tile"><h3>Evidence That Deters</h3><p>Visual systems to capture and deter war crimes, not to enable them.</p></div>
-            <div class="tile"><h3>Scale Protection, Not Power</h3><p>Scalable human protection, not global force projection.</p></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===== ETHICS ===== -->
-      <section id="ethics" class="container section">
-        <h2 class="xl">Accountability by Design. Justice by Code.</h2>
-        <p class="lead">Buraq AI empowers civilians, not armies—capturing war crimes and predicting atrocities where traditional defense fails.</p>
-        <ul class="chips">
-          <li>AI-driven</li><li>Non-Lethal defense</li><li>Conflict monitoring</li><li>Ethical surveillance</li>
-        </ul>
-      </section>
-
-      <!-- ===== GALLERY ===== -->
-      <section id="gallery" class="container section">
-        <h2 class="xl">From the field to the courtroom</h2>
-        <div class="gallery">
-          <figure class="gallery__vis media-1x1"><img class="gallery__img" src="assets/dashboard.png" alt=""></figure>
-          <div class="gallery__steps">
-            <article class="step card"><h3>1) Capture &amp; Verify</h3><p>Trusted timestamping, geotagging, and sensor attestation at the edge.</p></article>
-            <article class="step card"><h3>2) Structure the Narrative</h3><p>Multilingual NLP turns disparate reports into cohesive incident timelines.</p></article>
-            <article class="step card"><h3>3) Preserve the Chain</h3><p>Immutable logs &amp; cryptographic seals meet ICC/UNHRC expectations.</p></article>
-            <article class="step card"><h3>4) Present as Evidence</h3><p>Export case bundles with provenance to accelerate accountability.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===== FAQ ===== -->
-      <section id="faq" class="container section">
-        <h2 class="xl">Insights</h2>
-        <p class="lead">Discover our system's role in protecting global human rights.</p>
-
-        <div class="faq">
-          <details class="faq__item">
-            <summary>How does the system work offline?</summary>
-            <div class="faq__body">
-              <p>Buraq AI uses a lightweight, field-adapted Kubernetes cluster architecture to maintain functionality in offline or intermittently connected environments. Each edge deployment runs on compact compute units configured as nodes within a self-contained Kubernetes cluster. This enables continuous monitoring, even in fully disconnected or jammed zones.</p>
-            </div>
-          </details>
-
-          <details class="faq__item">
-            <summary>Why is the data legally valid?</summary>
-            <div class="faq__body">
-              <p>Buraq AI aligns all evidence collection with international standards, such as the Rome Statute, Universal Declaration of Human Rights, UN Chain of Custody Protocols, and the Geneva Conventions.</p>
-            </div>
-          </details>
-
-          <details class="faq__item">
-            <summary>Is it effective in conflict areas?</summary>
-            <div class="faq__body">
-              <p>Yes—Buraq AI is specifically engineered for deployment in conflict zones where traditional monitoring systems fail. Effectiveness is achieved through offline autonomy, portability, real-time documentation, and resilience.</p>
-            </div>
-          </details>
-
-          <details class="faq__item">
-            <summary>Who benefits from this technology?</summary>
-            <div class="faq__body">
-              <p>Buraq AI benefits legal investigators, humanitarian organizations, journalists, and conflict-affected communities by providing real-time, verifiable documentation of human rights violations. It enables safer monitoring, stronger legal cases, and faster international response—even in areas inaccessible to humans. From the ICC to frontline NGOs, Buraq AI empowers those fighting for truth and accountability.</p>
-            </div>
-          </details>
-        </div>
-      </section>
-
-      <!-- ===== CONTACT ===== -->
-      <section id="contact" class="slab">
-        <div class="container section">
-          <h2 class="xl">Connect With Us</h2>
-          <p class="lead">Contact our team to discuss deployments, partnerships, or access requests.</p>
-
-          <form id="inqForm" class="form" novalidate>
-            <div class="form__grid">
-              <label class="field"><span>First Name*</span><input type="text" name="firstName" required></label>
-              <label class="field"><span>Last Name*</span><input type="text" name="lastName" required></label>
-              <label class="field"><span>Business Email*</span><input type="email" name="email" required></label>
-              <label class="field"><span>Organization Name*</span><input type="text" name="org" required></label>
-              <label class="field"><span>Job Title*</span><input type="text" name="title"></label>
-              <label class="field"><span>Country*</span><input type="text" name="country" required></label>
-              <label class="field field--full"><span>Tell us challenges, project timing, and plans for using Buraq AI*</span><textarea name="notes" rows="5" required></textarea></label>
-            </div>
-            <div class="g-recaptcha" data-sitekey="6Lf8SLwrAAAAADyqwKLrfs-_4kFu053sjEtz3N6_" data-theme="light"></div>
-            <div class="form__actions">
-              <button type="submit" class="btn btn--solid">Submit inquiry</button>
-              <div id="formMsg" class="form__msg" role="status" aria-live="polite"></div>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <!-- ===== FOOTER ===== -->
-      <footer class="container footer">
-        <div class="foot__brand">
-          <img src="assets/buraq-logo.png" alt="" width="26" height="26">
-          <div>© <span id="yr"></span> Buraq AI, Inc.</div>
-        </div>
-        <nav class="foot__links">
-          <a href="#resources">Principles</a>
-          <a href="#ethics">Ethics</a>
-          <a href="#faq">Inquiries</a>
-        </nav>
-      </footer>
-    </main>
-
-    <!-- Menu drawer -->
-    <div id="menuPanel" class="panel" aria-hidden="true">
-      <div class="panel__backdrop" data-close="menu"></div>
-      <nav class="panel__content panel__content--menu" role="dialog" aria-modal="true" aria-label="Menu">
-        <button class="icon-btn panel__close" data-close="menu" aria-label="Close menu">✕</button>
+      <div class="nav-links">
         <a href="#overview">Overview</a>
         <a href="#ops">Opposition</a>
         <a href="#platform">Platform</a>
@@ -354,25 +30,345 @@
         <a href="#resources">Principles</a>
         <a href="#ethics">Ethics</a>
         <a href="#gallery">How it works</a>
-        <a href="#contact">Get Started</a>
-      </nav>
-    </div>
+        <a href="#faq">Insights</a>
+      </div>
 
-    <!-- Keep this order -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script type="module" src="firebase-init.js"></script>
-    <script type="module" src="main.js"></script>
+      <!-- Inline search lives in the empty middle span -->
+      <div class="nav-inline-search" aria-hidden="true">
+        <input id="navSearch" type="search" placeholder="Search…" autocomplete="off" />
+      </div>
+
+      <div class="nav-actions">
+        <a class="btn btn--outline" href="#contact">Get Started</a>
+        <button id="btnSearch" class="icon-btn" aria-label="Search" title="Search">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 0 1 5.83 12.27l4.2 4.2-1.42 1.41-4.2-4.2A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 .001 11.001A5.5 5.5 0 0 0 10.5 5Z" fill="currentColor"/></svg>
+        </button>
+        <button id="btnMenu" class="icon-btn" aria-label="Open menu" aria-haspopup="dialog" aria-controls="menuPanel">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h16v2H4v-2Z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===== HERO ===== -->
+    <header class="hero" role="banner" id="hero">
+      <div class="hero__anim-wrap" aria-hidden="true">
+        <video
+          class="hero__video"
+          id="introVid"
+          src="assets/buraq-animation.mp4"
+          poster="assets/hero-cctv.jpg"
+          playsinline
+          muted
+          autoplay
+          preload="auto"
+        ></video>
+      </div>
+
+      <div class="hero__inner hero__inner--center">
+        <div class="kicker">INTELLIGENCE • SURVEILLANCE • RECONNAISSANCE</div>
+        <h1 class="hero__title">AI-Powered ISR for Human Rights Defense</h1>
+        <p class="sub">The first ISR platform built for protecting civilians and prosecuting abusers.</p>
+
+        <div class="cta-row">
+          <a class="btn btn--ghost" href="#overview">More Info</a>
+          <a class="btn btn--primary" href="#contact">Get Started</a>
+        </div>
+
+        <div class="scroll-indicator" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path d="M12 16.5 5.5 10l1.4-1.4L12 13.7l5.1-5.1L18.5 10 12 16.5Z" fill="currentColor"/>
+          </svg>
+          <span>Explore Our Mission</span>
+        </div>
+      </div>
+
+      <div class="hero__vignette" aria-hidden="true"></div>
+    </header>
+
+    <!-- ===== OVERVIEW ===== -->
+    <section id="overview" class="container section">
+      <h2 class="xl" style="margin-top:28px;">From Detection to Deterrence: A New Era of Human Rights Oversight</h2>
+      <div class="cards-4">
+        <article class="card"><h3>Autonomous Visual Surveillance</h3><p>Deploy edge-based drones equipped with real-time AI vision to capture, geotag, and verify war crimes—even where connectivity fails and witnesses are silenced.</p></article>
+        <article class="card"><h3>Predictive AI for Early Intervention</h3><p>Use multilingual NLP to scan, classify, and escalate warning signs—turning fragmented reports into predictive intelligence that prevents atrocities before they unfold.</p></article>
+        <article class="card"><h3>Edge-Deployment in War Zones</h3><p>Ensure uninterrupted monitoring through edge-based AI kits designed to function without internet, stable power, or human oversight.</p></article>
+        <article class="card"><h3>Legal Evidence Engine</h3><p>Produce time-stamped, geo-verified data automatically labeled to meet standards set by the ICC, UNHRC, and UDHR.</p></article>
+      </div>
+
+      <div class="carousel" data-autoplay="true" style="margin-top:24px;">
+        <button class="car-btn car-prev" aria-label="Previous slide">‹</button>
+        <div class="car-track car-frame">
+          <figure class="car-slide is-active">
+            <img src="assets/detectedevents.png" alt="Real-time detection overlays">
+            <figcaption>Real-time detection &amp; tracking on constrained devices.</figcaption>
+          </figure>
+          <figure class="car-slide">
+            <img src="assets/drone-with-thermal-night-vision-view-of-terrorist-squad-walking-with-weapons.png" alt="Thermal night surveillance">
+            <figcaption>Self-contained edge clusters for offline autonomy.</figcaption>
+          </figure>
+          <figure class="car-slide">
+            <img src="assets/sar-thermal-drone.png" alt="Thermal aerial reconnaissance">
+            <figcaption>Urban documentation with tamper-evident chain of custody.</figcaption>
+          </figure>
+          <figure class="car-slide">
+            <img src="assets/top-aerial-view-of-the-aircraft-graveyard-or-airplane-boneyard-in-arizona-united-states.png" alt="Aerial operations">
+            <figcaption>Rapid mobile deployments from vehicles to rooftop hubs.</figcaption>
+          </figure>
+          <figure class="car-slide">
+            <img src="assets/tile-health.jpg" alt="Humanitarian corridors">
+            <figcaption>Protecting civilians and humanitarian corridors.</figcaption>
+          </figure>
+        </div>
+        <button class="car-btn car-next" aria-label="Next slide">›</button>
+        <div class="car-dots" role="tablist"></div>
+        <button class="car-toggle" aria-pressed="true" aria-label="Pause autoplay"></button>
+      </div>
+    </section>
+
+    <!-- ===== OPPOSITION (auto-scrolling, no arrows) ===== -->
+    <section id="ops" class="container section">
+      <h2 class="xl">What We Counter</h2>
+      <p class="lead">How abusers try to evade accountability — and how Buraq AI is built to neutralize those tactics.</p>
+
+      <div class="ops-carousel" id="opsCarousel" data-speed="2800">
+        <div class="ops-viewport">
+          <ul class="ops-track">
+            <li class="ops-card">
+              <figure class="ops-card__media"><img src="assets/th.png" alt="Tampered CCTV"></figure>
+              <div class="ops-card__body">
+                <h3>Missile &amp; Rocket Launch Tracking</h3>
+                <p>Automatically detect, geolocate, and track launches from land, sea, or air — with predicted impact zones rendered live on the tactical map.</p>
+              </div>
+            </li>
+
+            <li class="ops-card">
+              <figure class="ops-card__media"><img src="assets/swarm-of-drones-flying-at-dusk-a-group-of-drones-hovering-in-the-sky-at-dusk-showcasing.png" alt="Swarm drones"></figure>
+              <div class="ops-card__body">
+                <h3>Drone Swarm Coordination</h3>
+                <p>Monitor and command multiple surveillance drones simultaneously, with AI-assisted battery management, signal loss prediction, and fallback routing over beseiged zones.</p>
+              </div>
+            </li>
+
+            <li class="ops-card">
+              <figure class="ops-card__media"><img src="assets/sar-thermal-drone.png" alt="Thermal urban"></figure>
+              <div class="ops-card__body">
+                <h3>Infantry &amp; Vehicle Heat Tagging</h3>
+                <p>Uses onboard edge-AI models to identify armed units, tanks, or patrol convoys moving through rubble, tunnels, or dense urban terrain—day or night.</p>
+              </div>
+            </li>
+
+            <li class="ops-card">
+              <figure class="ops-card__media"><img src="assets/360_F_496212234_jRF6uGgwIT763c9PS8ydHggNUCWLYOqT.png" alt="Decoys"></figure>
+              <div class="ops-card__body">
+                <h3>Live Sector Alert Feed + Fusion Warnings</h3>
+                <p>Consolidates alerts from multiple sources into a centralized threat feed, prioritized by severity and augmented by pattern-matching fusion AI.</p>
+              </div>
+            </li>
+
+            <li class="ops-card">
+              <figure class="ops-card__media"><img src="assets/detectedevents.png" alt="On-device detection"></figure>
+              <div class="ops-card__body">
+                <h3>Offline Intelligence Node Deployment</h3>
+                <p>Operates in communications denied regions using Kubernetes powered edge modules, synchronizing later when uplink is restored. No cloud required.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PLATFORM ===== -->
+    <section id="platform" class="container section">
+      <h2 class="xl">Deployable Anywhere</h2>
+      <p class="lead">Run Buraq AI on low-power edge clusters anywhere, anytime.</p>
+
+      <div class="platform-cards-vertical">
+        <article class="feature-card">
+          <h3>Resilience</h3>
+          <p class="summary">Deploy and operate under low connectivity, high risk conditions.</p>
+          <p class="details">Built for offline resilience in warzones, disaster zones, and jammed networks. Buraq AI is engineered to keep running where traditional systems collapse.</p>
+        </article>
+
+        <article class="feature-card">
+          <h3>Predictive analysis</h3>
+          <p class="summary">Classify early-warning signals from diverse sources.</p>
+          <p class="details">From drone feeds, social chatter, comms intercepts, and local reports—Buraq AI anticipates threats before they escalate, giving decision-makers more time to act.</p>
+        </article>
+
+        <article class="feature-card">
+          <h3>Global reach</h3>
+          <p class="summary">Turning surveillance into global resistance.</p>
+          <p class="details">From frontline villages to international courts, Buraq AI transforms raw field intelligence into verifiable evidence, driving accountability on a global scale.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== 3D MODEL STAGE ===== -->
+    <section id="model" class="container section">
+      <div class="stage">
+        <div class="stage__head">
+          <p class="eyebrow">3D System View</p>
+          <h2 class="xl">Edge Module Preview</h2>
+          <p class="muted">Interact with the drone model — zoom, rotate, and pan.</p>
+        </div>
+
+        <figure class="stage__media media-16x9" style="position:relative;">
+          <div class="drone-ui">
+            <label class="drone-selector">
+              <span>Currently viewing:</span>
+              <select id="droneSelect">
+                <option value="drone1.glb" selected>Al-Warda</option>
+                <option value="drone2.glb">Al-Miraj</option>
+              </select>
+            </label>
+          </div>
+          <canvas id="droneCanvas"></canvas>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===== PRINCIPLES ===== -->
+    <section id="resources" class="slab">
+      <div class="container section">
+        <h2 class="xl">Challenging the Old “Defense” Model</h2>
+        <div class="tiles-3">
+          <div class="tile"><h3>Protective Intelligence</h3><p>Data intelligence to protect the innocent, not to target them.</p></div>
+          <div class="tile"><h3>Evidence That Deters</h3><p>Visual systems to capture and deter war crimes, not to enable them.</p></div>
+          <div class="tile"><h3>Scale Protection, Not Power</h3><p>Scalable human protection, not global force projection.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ETHICS ===== -->
+    <section id="ethics" class="container section">
+      <h2 class="xl">Accountability by Design. Justice by Code.</h2>
+      <p class="lead">Buraq AI empowers civilians, not armies—capturing war crimes and predicting atrocities where traditional defense fails.</p>
+      <ul class="chips">
+        <li>AI-driven</li><li>Non-Lethal defense</li><li>Conflict monitoring</li><li>Ethical surveillance</li>
+      </ul>
+    </section>
+
+    <!-- ===== GALLERY ===== -->
+    <section id="gallery" class="container section">
+      <h2 class="xl">From the field to the courtroom</h2>
+      <div class="gallery">
+        <figure class="gallery__vis media-1x1"><img class="gallery__img" src="assets/dashboard.png" alt=""></figure>
+        <div class="gallery__steps">
+          <article class="step card"><h3>1) Capture &amp; Verify</h3><p>Trusted timestamping, geotagging, and sensor attestation at the edge.</p></article>
+          <article class="step card"><h3>2) Structure the Narrative</h3><p>Multilingual NLP turns disparate reports into cohesive incident timelines.</p></article>
+          <article class="step card"><h3>3) Preserve the Chain</h3><p>Immutable logs &amp; cryptographic seals meet ICC/UNHRC expectations.</p></article>
+          <article class="step card"><h3>4) Present as Evidence</h3><p>Export case bundles with provenance to accelerate accountability.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq" class="container section">
+      <h2 class="xl">Insights</h2>
+      <p class="lead">Discover our system's role in protecting global human rights.</p>
+
+      <div class="faq">
+        <details class="faq__item">
+          <summary>How does the system work offline?</summary>
+          <div class="faq__body">
+            <p>Buraq AI uses a lightweight, field-adapted Kubernetes cluster architecture to maintain functionality in offline or intermittently connected environments. Each edge deployment runs on compact compute units configured as nodes within a self-contained Kubernetes cluster. This enables continuous monitoring, even in fully disconnected or jammed zones.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary>Why is the data legally valid?</summary>
+          <div class="faq__body">
+            <p>Buraq AI aligns all evidence collection with international standards, such as the Rome Statute, Universal Declaration of Human Rights, UN Chain of Custody Protocols, and the Geneva Conventions.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary>Is it effective in conflict areas?</summary>
+          <div class="faq__body">
+            <p>Yes—Buraq AI is specifically engineered for deployment in conflict zones where traditional monitoring systems fail. Effectiveness is achieved through offline autonomy, portability, real-time documentation, and resilience.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary>Who benefits from this technology?</summary>
+          <div class="faq__body">
+            <p>Buraq AI benefits legal investigators, humanitarian organizations, journalists, and conflict-affected communities by providing real-time, verifiable documentation of human rights violations. It enables safer monitoring, stronger legal cases, and faster international response—even in areas inaccessible to humans. From the ICC to frontline NGOs, Buraq AI empowers those fighting for truth and accountability.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section id="contact" class="slab">
+      <div class="container section">
+        <h2 class="xl">Connect With Us</h2>
+        <p class="lead">Contact our team to discuss deployments, partnerships, or access requests.</p>
+
+        <form id="inqForm" class="form" novalidate>
+          <div class="form__grid">
+            <label class="field"><span>First Name*</span><input type="text" name="firstName" required></label>
+            <label class="field"><span>Last Name*</span><input type="text" name="lastName" required></label>
+            <label class="field"><span>Business Email*</span><input type="email" name="email" required></label>
+            <label class="field"><span>Organization Name*</span><input type="text" name="org" required></label>
+            <label class="field"><span>Job Title*</span><input type="text" name="title"></label>
+            <label class="field"><span>Country*</span><input type="text" name="country" required></label>
+            <label class="field field--full"><span>Tell us challenges, project timing, and plans for using Buraq AI*</span><textarea name="notes" rows="5" required></textarea></label>
+          </div>
+          <div class="g-recaptcha" data-sitekey="6Lf8SLwrAAAAADyqwKLrfs-_4kFu053sjEtz3N6_" data-theme="light"></div>
+          <div class="form__actions">
+            <button type="submit" class="btn btn--solid">Submit inquiry</button>
+            <div id="formMsg" class="form__msg" role="status" aria-live="polite"></div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="container footer">
+      <div class="foot__brand">
+        <img src="assets/buraq-logo.png" alt="" width="26" height="26">
+        <div>© <span id="yr"></span> Buraq AI, Inc.</div>
+      </div>
+      <nav class="foot__links">
+        <a href="#resources">Principles</a>
+        <a href="#ethics">Ethics</a>
+        <a href="#faq">Inquiries</a>
+      </nav>
+    </footer>
+  </main>
+
+  <!-- Menu drawer -->
+  <div id="menuPanel" class="panel" aria-hidden="true">
+    <div class="panel__backdrop" data-close="menu"></div>
+    <nav class="panel__content panel__content--menu" role="dialog" aria-modal="true" aria-label="Menu">
+      <button class="icon-btn panel__close" data-close="menu" aria-label="Close menu">✕</button>
+      <a href="#overview">Overview</a>
+      <a href="#ops">Opposition</a>
+      <a href="#platform">Platform</a>
+      <a href="#model">3D Model</a>
+      <a href="#resources">Principles</a>
+      <a href="#ethics">Ethics</a>
+      <a href="#gallery">How it works</a>
+      <a href="#contact">Get Started</a>
+    </nav>
+  </div>
+
+  <!-- Keep this order -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script type="module" src="firebase-init.js"></script>
 
   <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/"
-      }
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/"
     }
-    </script>
+  }
+  </script>
 
-    <!-- Only one include of your app script -->
-    <script type="module" src="main.js"></script>
-  </body>
-  </html>
+  <!-- Only one include of your app script -->
+  <script type="module" src="main.js"></script>
+</body>
+</html>

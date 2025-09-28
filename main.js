@@ -2,7 +2,7 @@
    - Hero text gate-in
    - Sticky nav frosting past hero
    - Overview carousel
-   - OPS 3-up arrows
+   - OPS auto-scrolling carousel (no arrows)
    - Panels (search/menu)
    - Form niceties
    - 3D Drone Viewer (Three.js with zoom limits)
@@ -22,7 +22,6 @@ function gateHero() {
   if (!hero || !video) return;
 
   video.addEventListener('ended', () => hero.classList.add('hero--text-in'));
-  // Fallback after ~4.6s in case autoplay is blocked
   setTimeout(() => hero.classList.add('hero--text-in'), 4600);
 }
 
@@ -98,62 +97,80 @@ function setupCarousel() {
   });
 }
 
-/* ===== OPS infinite carousel (trimmed) ===== */
+/* ===== OPS continuous auto-scroll (no arrows) ===== */
 function setupOpsCarousel() {
   const wrap = document.getElementById('opsCarousel');
   if (!wrap) return;
 
   const viewport = wrap.querySelector('.ops-viewport');
   const track = wrap.querySelector('.ops-track');
-  const prev = wrap.querySelector('.ops-arrow--prev');
-  const next = wrap.querySelector('.ops-arrow--next');
 
-  const gap = parseFloat(getComputedStyle(track).gap) || 16;
-  const cards = Array.from(track.children);
-  const cardCount = cards.length;
-
-  // Clone before & after
-  cards.forEach(card => track.appendChild(card.cloneNode(true)));
-  cards.forEach(card => track.insertBefore(card.cloneNode(true), track.firstChild));
+  // Clone both ends for seamless loop
+  const originals = Array.from(track.children);
+  originals.forEach(card => track.appendChild(card.cloneNode(true)));
+  originals.forEach(card => track.insertBefore(card.cloneNode(true), track.firstChild));
 
   const allCards = Array.from(track.children);
+  const gap = parseFloat(getComputedStyle(track).gap) || 16;
+
+  // speed = ms per card (keeps your data-speed behavior)
+  const msPerCard = parseInt(wrap.dataset.speed, 10) || 2800;
+
   let cardW = allCards[0].getBoundingClientRect().width + gap;
+  let index = originals.length; // start centered on originals
+  let posX  = -index * cardW;   // live pixel position
+  let running = true;
 
-  let index = cardCount; // start centered on originals
-  track.style.transform = `translateX(${-index * cardW}px)`;
+  // Calculate pixels/second based on current card width
+  const velocity = () => cardW / (msPerCard / 600);
 
-  function go(dir) {
-    index += dir;
-    track.style.transition = 'transform 0.6s ease';
-    track.style.transform = `translateX(${-index * cardW}px)`;
-    track.addEventListener('transitionend', () => {
-      track.style.transition = 'none';
-      if (index >= cardCount * 2) index -= cardCount;
-      if (index < cardCount)      index += cardCount;
-      track.style.transform = `translateX(${-index * cardW}px)`;
-    }, { once: true });
-  }
+  const setX = (x) => { track.style.transition = 'none'; track.style.transform = `translateX(${x}px)`; };
+  setX(posX);
 
-  prev?.addEventListener('click', () => go(-1));
-  next?.addEventListener('click', () => go(1));
-
-  const speed = parseInt(wrap.dataset.speed, 10) || 2800;
-  let timer;
-  const start = () => { clearInterval(timer); timer = setInterval(() => go(1), speed); };
-  const stop  = () => clearInterval(timer);
-
-  [viewport, prev, next].forEach(el => {
+  // Hover to pause
+  const stop  = () => running = false;
+  const start = () => running = true;
+  [viewport].forEach(el => {
     el.addEventListener('mouseenter', stop);
     el.addEventListener('mouseleave', start);
   });
 
-  window.addEventListener('resize', () => {
-    cardW = allCards[0].getBoundingClientRect().width + gap;
-    track.style.transition = 'none';
-    track.style.transform = `translateX(${-index * cardW}px)`;
-  });
+  // RAF loop for buttery continuous motion
+  let last = performance.now();
+  function loop(now){
+    const dt = now - last; last = now;
+    if (running){
+      posX -= velocity() * (dt / 1000);
 
-  start();
+      // How many whole cards have we advanced since last normalize?
+      const cardsAdvanced = Math.floor((-posX / cardW) - index);
+      if (cardsAdvanced > 0){
+        index += cardsAdvanced;
+      }
+
+      // Keep the index inside the middle block
+      if (index >= originals.length * 2) {
+        index -= originals.length;
+        posX += originals.length * cardW;
+      } else if (index < originals.length) {
+        index += originals.length;
+        posX -= originals.length * cardW;
+      }
+
+      setX(posX);
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // Keep motion consistent on resize
+  window.addEventListener('resize', () => {
+    const oldCardW = cardW;
+    cardW = allCards[0].getBoundingClientRect().width + gap;
+    const frac = -posX / oldCardW;       // how many card-widths from origin
+    posX = -frac * cardW;                // same fractional position with new width
+    setX(posX);
+  });
 }
 
 /* ===== Panels (search/menu) ===== */
@@ -280,7 +297,6 @@ function initDrone() {
   let currentModelGroup = null;
 
   function loadDrone(file) {
-    // remove previous model
     if (currentModelGroup) {
       scene.remove(currentModelGroup);
       currentModelGroup.traverse(obj => {
@@ -301,7 +317,6 @@ function initDrone() {
         scene.add(group);
         currentModelGroup = group;
 
-        // Center + fit
         const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3()).length();
         const center = box.getCenter(new THREE.Vector3());
@@ -329,7 +344,6 @@ function initDrone() {
     );
   }
 
-  // Load default model
   const select = document.getElementById('droneSelect');
   if (select) {
     loadDrone(select.value);
@@ -351,15 +365,14 @@ function initDrone() {
   })();
 }
 
-
 /* ===== Init ===== */
 window.addEventListener('DOMContentLoaded', () => {
   gateHero();
   setupFrostNav();
   setupSmoothAnchors();
   setupCarousel();
-  setupOpsCarousel();
+  setupOpsCarousel();   // now continuous and arrow-free
   setupPanels();
   setupForm();
-  initDrone(); // start 3D viewer
+  initDrone();
 });
