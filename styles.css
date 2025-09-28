@@ -823,3 +823,8 @@ section[id] {
   font-size: 0.9em;
 }
 
+/* Make the "Challenging the Old 'Defense' Model" section use the default page color */
+#resources.slab{
+  background: var(--canvas);   /* same as the rest of the site */
+  border-block: 0;             /* remove the slab divider lines */
+}
