@@ -96,39 +96,34 @@
         <article class="card"><h3>Legal Evidence Engine</h3><p>Produce time-stamped, geo-verified data automatically labeled to meet standards set by the ICC, UNHRC, and UDHR.</p></article>
       </div>
 
-      <!-- Apple-style slideshow: dots + long progress bar (no arrows) -->
-      <div class="carousel" data-autoplay="true" data-interval="5200">
-        <div class="car-track car-frame">
-          <figure class="car-slide is-active">
-            <img src="assets/detectedevents.png" alt="Real-time detection overlays">
-            <figcaption>Real-time detection &amp; tracking on constrained devices.</figcaption>
-          </figure>
-          <figure class="car-slide">
-            <img src="assets/drone-with-thermal-night-vision-view-of-terrorist-squad-walking-with-weapons.png" alt="Thermal night surveillance">
-            <figcaption>Self-contained edge clusters for offline autonomy.</figcaption>
-          </figure>
-          <figure class="car-slide">
-            <img src="assets/sar-thermal-drone.png" alt="Thermal aerial reconnaissance">
-            <figcaption>Urban documentation with tamper-evident chain of custody.</figcaption>
-          </figure>
-          <figure class="car-slide">
-            <img src="assets/top-aerial-view-of-the-aircraft-graveyard-or-airplane-boneyard-in-arizona-united-states.png" alt="Aerial operations">
-            <figcaption>Rapid mobile deployments from vehicles to rooftop hubs.</figcaption>
-          </figure>
-          <figure class="car-slide">
-            <img src="assets/tile-health.jpg" alt="Humanitarian corridors">
-            <figcaption>Protecting civilians and humanitarian corridors.</figcaption>
-          </figure>
-        </div>
-
-        <div class="car-ui">
-          <div class="car-dots" role="tablist"></div>
-          <div class="car-progress" aria-hidden="true">
-            <span class="car-progress__bar"></span>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- Single carousel with proper structure -->
+<div class="carousel" data-autoplay="true" data-interval="5200">
+  <div class="car-track car-frame">
+    <figure class="car-slide is-active">
+      <img src="assets/detectedevents.png" alt="Real-time detection overlays">
+      <figcaption>Real-time detection &amp; tracking on constrained devices.</figcaption>
+    </figure>
+    <figure class="car-slide">
+      <img src="assets/drone-with-thermal-night-vision-view-of-terrorist-squad-walking-with-weapons.png" alt="Thermal night surveillance">
+      <figcaption>Self-contained edge clusters for offline autonomy.</figcaption>
+    </figure>
+    <figure class="car-slide">
+      <img src="assets/sar-thermal-drone.png" alt="Thermal aerial reconnaissance">
+      <figcaption>Urban documentation with tamper-evident chain of custody.</figcaption>
+    </figure>
+    <figure class="car-slide">
+      <img src="assets/top-aerial-view-of-the-aircraft-graveyard-or-airplane-boneyard-in-arizona-united-states.png" alt="Aerial operations">
+      <figcaption>Rapid mobile deployments from vehicles to rooftop hubs.</figcaption>
+    </figure>
+    <figure class="car-slide">
+      <img src="assets/tile-health.jpg" alt="Humanitarian corridors">
+      <figcaption>Protecting civilians and humanitarian corridors.</figcaption>
+    </figure>
+  </div>
+  
+  <!-- ADD THIS: dots container -->
+  <div class="car-dots"></div>
+</div>
 
     <!-- ===== OPPOSITION ===== -->
     <section id="ops" class="container section">
@@ -204,8 +199,6 @@
       </div>
     </section>
 
-    <!-- ===== 3D MODEL STAGE ===== -->
-    
 
     <!-- ===== PRINCIPLES ===== -->
     <section id="resources" class="container section">

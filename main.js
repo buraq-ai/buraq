@@ -52,82 +52,64 @@ function setupSmoothAnchors(){
 /* ===== Overview carousel — Apple-style with long progress bar ===== */
 function setupCarousel() {
   const carousels = $$('.carousel');
-
   carousels.forEach(carousel => {
-    const track   = $('.car-track', carousel);
+    const track = $('.car-track', carousel);
     if (!track) return;
 
     const slides   = $$('.car-slide', track);
     const dotsWrap = $('.car-dots', carousel);
-    const bar      = $('.car-progress__bar', carousel);
+    const autoplay = carousel.dataset.autoplay === 'true';
 
-    const autoplay = carousel.dataset.autoplay !== 'false';
-    const interval = parseInt(carousel.dataset.interval || '5200', 10);
+    // NEW: read interval & expose to CSS for the smooth transform animation
+    const interval = parseInt(carousel.dataset.interval, 10) || 5200;
+    carousel.style.setProperty('--car-interval', `${interval}ms`);
 
     let i = slides.findIndex(s => s.classList.contains('is-active'));
     if (i < 0) i = 0;
 
-    // Build dots
     const dots = slides.map((_, idx) => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.setAttribute('aria-label', `Go to slide ${idx + 1}`);
-      if (idx === i) b.setAttribute('aria-current', 'true');
-      b.addEventListener('click', () => {
-        stop();
-        go(idx);
-        start();
-      });
+      b.setAttribute('aria-label', `Go to slide ${idx+1}`);
+      if (idx === i) b.classList.add('is-active');
+      b.addEventListener('click', () => go(idx));
       dotsWrap.appendChild(b);
       return b;
     });
 
+    function setActive(newIndex){
+      slides.forEach(s => s.classList.remove('is-active'));
+      dots.forEach(d => d.classList.remove('is-active'));
+
+      slides[newIndex].classList.add('is-active');
+
+      // NEW: force the progress animation to restart cleanly on the new dot
+      const d = dots[newIndex];
+      d.classList.remove('is-active');
+      // reflow tick to reset animation timeline
+      // eslint-disable-next-line no-unused-expressions
+      d.offsetWidth;
+      d.classList.add('is-active');
+    }
+
     function go(n) {
-      slides[i].classList.remove('is-active');
-      dots[i].removeAttribute('aria-current');
       i = (n + slides.length) % slides.length;
-      slides[i].classList.add('is-active');
-      dots[i].setAttribute('aria-current', 'true');
-
-      // restart progress bar
-      if (bar) {
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        void bar.offsetWidth; // reflow to reset
-        bar.style.transition = `width ${interval}ms linear`;
-        bar.style.width = '100%';
-      }
+      setActive(i);
     }
-    const nextSlide = () => go(i + 1);
 
+    function nextSlide(){ go(i+1); }
+
+    // autoplay using the same interval as the CSS animation
     let t;
-    function start() {
-      if (!autoplay) return;
-      stop();
-      if (bar) {
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        void bar.offsetWidth;
-        bar.style.transition = `width ${interval}ms linear`;
-        bar.style.width = '100%';
-      }
-      t = setInterval(nextSlide, interval);
-    }
-    function stop() {
-      if (t) clearInterval(t);
-      t = null;
-      if (bar) { bar.style.transition = 'none'; bar.style.width = '0%'; }
-    }
+    function start(){ if (autoplay){ stop(); t = setInterval(nextSlide, interval); } }
+    function stop(){ if (t) clearInterval(t); }
 
-    // init
-    slides.forEach((s, idx) => s.classList.toggle('is-active', idx === i));
-    dots.forEach((d, idx) => d.toggleAttribute('aria-current', idx === i));
+    track.addEventListener('mouseenter', stop);
+    track.addEventListener('mouseleave', start);
+
+    // ensure initial state uses the smooth progress
+    setActive(i);
     start();
-
-    // Pause timers when the tab is hidden to keep timing consistent
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) stop(); else start();
-    });
   });
 }
 
@@ -316,7 +298,7 @@ function initDrone() {
 
   // Lights
   scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1));
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 4);
   dirLight.position.set(5, 10, 7.5);
   scene.add(dirLight);
 
