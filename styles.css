@@ -766,7 +766,7 @@ section[id] {
   width: 100%;
   height: 100%;
   display: block;
-  background: #424347;   /* subtle dark behind the transparent renderer */
+  background: #525151c2;   /* subtle dark behind the transparent renderer */
   border-radius: 16px;
 }
 .drone-ui {
@@ -827,4 +827,140 @@ section[id] {
 #resources.slab{
   background: var(--canvas);   /* same as the rest of the site */
   border-block: 0;             /* remove the slab divider lines */
+}
+/* Match the drone canvas look/feel for the module viewer */
+#moduleCanvas{
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #525151c2;   /* same fallback backdrop */
+  border-radius: 16px;
+}
+/* === Apple-style Overview slideshow (keeps your existing look) === */
+.carousel { position: relative; } /* no arrows now */
+
+.car-frame{
+  position: relative;
+  aspect-ratio: 16 / 9;
+  min-height: 280px;             /* safety net so it never collapses */
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--hair);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.car-track{ position: relative; }
+.car-slide{
+  position: absolute; inset: 0;
+  margin: 0;
+  opacity: 0;
+  transform: translateX(6px) scale(.98);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.car-slide.is-active{ opacity:1; transform:none; }
+.car-slide img{ width:100%; height:100%; object-fit:cover; display:block; }
+.car-slide figcaption{
+  position:absolute; left:0; right:0; bottom:0;
+  padding:12px 16px; color:#fff;
+  background:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.55) 70%);
+  font-weight:600;
+}
+
+/* Centered dots + long progress bar under image */
+.car-ui{
+  position:absolute; left:50%; bottom:12px; transform:translateX(-50%);
+  display:grid; grid-auto-flow:row; justify-items:center; gap:10px; z-index:10;
+}
+.car-dots{ display:flex; gap:10px; }
+.car-dots button{
+  width:6px; height:6px; border-radius:999px; border:none;
+  background:rgba(0,0,0,.25);
+  box-shadow:0 0 0 1px rgba(255,255,255,.55) inset;
+  opacity:.75; cursor:pointer;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.car-dots button[aria-current="true"]{
+  transform:scale(1.35);
+  opacity:1;
+  background:#0357c5;
+  box-shadow:0 0 0 1px rgba(255,255,255,.85) inset;
+}
+.car-progress{
+  width:min(240px, 50vw); height:8px; border-radius:999px;
+  background:rgba(0,0,0,.08);
+  box-shadow:0 0 0 1px rgba(255,255,255,.55) inset;
+  overflow:hidden;
+}
+.car-progress__bar{
+  display:block; width:0%; height:100%; border-radius:inherit;
+  background:linear-gradient(180deg,#111,#222);
+  box-shadow:0 0 0 1px rgba(255,255,255,.7) inset;
+}
+
+/* Hide any old arrows/toggles if present */
+.car-btn, .car-toggle { display:none !important; }
+/* === Bigger, centered overview slideshow; progress bar under image === */
+
+/* Center the whole carousel block and make it wider */
+.carousel{
+  max-width: min(1180px, 96vw);   /* fills the container but stays elegant */
+  margin: 22px auto 0;            /* centered */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;                      /* space between frame and controls */
+}
+
+/* Make the visual larger */
+.car-frame{
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 420px;              /* was ~280px; increase size */
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--hair);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+/* Put the dots + progress bar BELOW the slideshow (no overlay) */
+.carousel .car-ui{
+  position: static !important;    /* override previous absolute */
+  transform: none !important;
+  left: auto; right: auto; bottom: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Dots look the same, centered */
+.car-dots{ display:flex; gap:10px; justify-content:center; }
+
+/* Longer progress bar under dots */
+.car-progress{
+  width: min(640px, 70%);         /* nice “Apple” length */
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(3, 92, 175, 0.08);
+  box-shadow: 0 0 0 1px rgba(15, 29, 236, 0.15) inset, 0 1px 0 rgba(255,255,255,.4);
+  overflow: hidden;
+}
+
+/* Animated fill */
+.car-progress__bar{
+  display:block;
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(180deg, #0563f0, #306ae6);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.7) inset;
+}
+
+/* Tweak for small screens so it’s still bigger than before */
+@media (max-width: 640px){
+  .car-frame{ min-height: 320px; }
+  .car-progress{ width: min(440px, 82vw); }
 }

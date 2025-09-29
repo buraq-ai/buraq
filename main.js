@@ -49,27 +49,35 @@ function setupSmoothAnchors(){
 }
 
 /* ===== Simple carousel (Overview) ===== */
+/* ===== Overview carousel — Apple-style with long progress bar ===== */
 function setupCarousel() {
   const carousels = $$('.carousel');
+
   carousels.forEach(carousel => {
-    const track = $('.car-track', carousel);
+    const track   = $('.car-track', carousel);
     if (!track) return;
 
     const slides   = $$('.car-slide', track);
-    const prev     = $('.car-prev', carousel);
-    const next     = $('.car-next', carousel);
     const dotsWrap = $('.car-dots', carousel);
-    const autoplay = carousel.dataset.autoplay === 'true';
+    const bar      = $('.car-progress__bar', carousel);
+
+    const autoplay = carousel.dataset.autoplay !== 'false';
+    const interval = parseInt(carousel.dataset.interval || '5200', 10);
 
     let i = slides.findIndex(s => s.classList.contains('is-active'));
     if (i < 0) i = 0;
 
+    // Build dots
     const dots = slides.map((_, idx) => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.setAttribute('aria-label', `Go to slide ${idx+1}`);
+      b.setAttribute('aria-label', `Go to slide ${idx + 1}`);
       if (idx === i) b.setAttribute('aria-current', 'true');
-      b.addEventListener('click', () => go(idx));
+      b.addEventListener('click', () => {
+        stop();
+        go(idx);
+        start();
+      });
       dotsWrap.appendChild(b);
       return b;
     });
@@ -80,22 +88,49 @@ function setupCarousel() {
       i = (n + slides.length) % slides.length;
       slides[i].classList.add('is-active');
       dots[i].setAttribute('aria-current', 'true');
-    }
-    function nextSlide(){ go(i+1); }
-    function prevSlide(){ go(i-1); }
 
-    next?.addEventListener('click', nextSlide);
-    prev?.addEventListener('click', prevSlide);
+      // restart progress bar
+      if (bar) {
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        void bar.offsetWidth; // reflow to reset
+        bar.style.transition = `width ${interval}ms linear`;
+        bar.style.width = '100%';
+      }
+    }
+    const nextSlide = () => go(i + 1);
 
     let t;
-    function start(){ if (autoplay){ stop(); t = setInterval(nextSlide, 5000); } }
-    function stop(){ if (t) clearInterval(t); }
+    function start() {
+      if (!autoplay) return;
+      stop();
+      if (bar) {
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        void bar.offsetWidth;
+        bar.style.transition = `width ${interval}ms linear`;
+        bar.style.width = '100%';
+      }
+      t = setInterval(nextSlide, interval);
+    }
+    function stop() {
+      if (t) clearInterval(t);
+      t = null;
+      if (bar) { bar.style.transition = 'none'; bar.style.width = '0%'; }
+    }
 
-    track.addEventListener('mouseenter', stop);
-    track.addEventListener('mouseleave', start);
+    // init
+    slides.forEach((s, idx) => s.classList.toggle('is-active', idx === i));
+    dots.forEach((d, idx) => d.toggleAttribute('aria-current', idx === i));
     start();
+
+    // Pause timers when the tab is hidden to keep timing consistent
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stop(); else start();
+    });
   });
 }
+
 
 /* ===== OPS continuous auto-scroll (no arrows) ===== */
 function setupOpsCarousel() {
@@ -365,6 +400,128 @@ function initDrone() {
   })();
 }
 
+/* ===== Second 3D GLTF Viewer (under Ethics) ===== */
+function initModule() {
+  const canvas = document.getElementById('moduleCanvas');
+  if (!canvas) return;
+
+  // Scene / Camera / Renderer
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(
+    60,
+    canvas.clientWidth / canvas.clientHeight,
+    0.1,
+    5000
+  );
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+  // Lights (same as drone)
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+  dirLight.position.set(5, 10, 7.5);
+  scene.add(dirLight);
+
+  // Controls (same limits/settings)
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.enablePan = true;
+  controls.minPolarAngle = 0.1;
+  controls.maxPolarAngle = Math.PI - 0.1;
+
+  const loader = new GLTFLoader();
+  let currentModelGroup = null;
+
+  function disposeGroup(g) {
+    g.traverse(obj => {
+      if (obj.geometry) obj.geometry.dispose();
+      if (obj.material) {
+        if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose && m.dispose());
+        else obj.material.dispose && obj.material.dispose();
+      }
+      if (obj.texture) obj.texture.dispose && obj.texture.dispose();
+    });
+  }
+
+  function loadModule(file) {
+    // Remove previous model cleanly
+    if (currentModelGroup) {
+      scene.remove(currentModelGroup);
+      disposeGroup(currentModelGroup);
+      currentModelGroup = null;
+    }
+
+    loader.load(
+      `assets/${file}`,
+      (gltf) => {
+        const model = gltf.scene;
+        const group = new THREE.Group();
+        group.add(model);
+        scene.add(group);
+        currentModelGroup = group;
+
+        // Center + frame (identical logic to the drone viewer)
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3()).length();
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.sub(center);
+
+        const sphere = box.getBoundingSphere(new THREE.Sphere());
+        const fitRadius = sphere.radius;
+        const fov = camera.fov * (Math.PI / 180);
+        const fitDist = (fitRadius / Math.sin(fov / 2)) * 1.2; // 20% margin
+
+        camera.near = fitDist / 100;
+        camera.far  = fitDist * 100;
+        camera.updateProjectionMatrix();
+
+        camera.position.set(fitDist * 0.6, fitDist * 0.1234, fitDist * 10);
+        controls.target.set(0, 0, 0);
+
+        // Zoom limits relative to model size
+        controls.minDistance = size / 3.7;
+        controls.maxDistance = size * 0.8;
+        controls.update();
+
+        console.log(`✅ Loaded ${file} (module viewer)`);
+      },
+      (xhr) => console.log(`Loading ${file}: ${((xhr.loaded / (xhr.total || 1)) * 100).toFixed(0)}%`),
+      (err) => console.error(`❌ Error loading ${file}`, err)
+    );
+  }
+
+  // Default file: modulerepresentation.glb
+  const select = document.getElementById('moduleSelect');
+  if (select) {
+    // Ensure the select value points to the correct file
+    if (!select.value) select.value = 'modulerepresentation.glb';
+    loadModule(select.value);
+    select.addEventListener('change', () => loadModule(select.value));
+  } else {
+    // Fallback: load directly if select isn't found
+    loadModule('modulerepresentation.glb');
+  }
+
+  // Resize handling
+  window.addEventListener('resize', () => {
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
+
+  // Render loop
+  (function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  })();
+}
+
+
 /* ===== Init ===== */
 window.addEventListener('DOMContentLoaded', () => {
   gateHero();
@@ -375,4 +532,5 @@ window.addEventListener('DOMContentLoaded', () => {
   setupPanels();
   setupForm();
   initDrone();
+  initModule();
 });
