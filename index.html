@@ -96,34 +96,35 @@
         <article class="card"><h3>Legal Evidence Engine</h3><p>Produce time-stamped, geo-verified data automatically labeled to meet standards set by the ICC, UNHRC, and UDHR.</p></article>
       </div>
 
-  <!-- Single carousel with proper structure -->
-<div class="carousel" data-autoplay="true" data-interval="5200">
-  <div class="car-track car-frame">
-    <figure class="car-slide is-active">
-      <img src="assets/detectedevents.png" alt="Real-time detection overlays">
-      <figcaption>Real-time detection &amp; tracking on constrained devices.</figcaption>
-    </figure>
-    <figure class="car-slide">
-      <img src="assets/drone-with-thermal-night-vision-view-of-terrorist-squad-walking-with-weapons.png" alt="Thermal night surveillance">
-      <figcaption>Self-contained edge clusters for offline autonomy.</figcaption>
-    </figure>
-    <figure class="car-slide">
-      <img src="assets/sar-thermal-drone.png" alt="Thermal aerial reconnaissance">
-      <figcaption>Urban documentation with tamper-evident chain of custody.</figcaption>
-    </figure>
-    <figure class="car-slide">
-      <img src="assets/top-aerial-view-of-the-aircraft-graveyard-or-airplane-boneyard-in-arizona-united-states.png" alt="Aerial operations">
-      <figcaption>Rapid mobile deployments from vehicles to rooftop hubs.</figcaption>
-    </figure>
-    <figure class="car-slide">
-      <img src="assets/tile-health.jpg" alt="Humanitarian corridors">
-      <figcaption>Protecting civilians and humanitarian corridors.</figcaption>
-    </figure>
-  </div>
-  
-  <!-- ADD THIS: dots container -->
-  <div class="car-dots"></div>
-</div>
+      <!-- Apple-style slideshow: progress-as-dots (no arrows, no pause) -->
+      <div class="carousel" data-autoplay="true" data-interval="5200">
+        <div class="car-track car-frame">
+          <figure class="car-slide is-active">
+            <img src="assets/detectedevents.png" alt="Real-time detection overlays">
+            <figcaption>Real-time detection &amp; tracking on constrained devices.</figcaption>
+          </figure>
+          <figure class="car-slide">
+            <img src="assets/drone-with-thermal-night-vision-view-of-terrorist-squad-walking-with-weapons.png" alt="Thermal night surveillance">
+            <figcaption>Self-contained edge clusters for offline autonomy.</figcaption>
+          </figure>
+          <figure class="car-slide">
+            <img src="assets/sar-thermal-drone.png" alt="Thermal aerial reconnaissance">
+            <figcaption>Urban documentation with tamper-evident chain of custody.</figcaption>
+          </figure>
+          <figure class="car-slide">
+            <img src="assets/top-aerial-view-of-the-aircraft-graveyard-or-airplane-boneyard-in-arizona-united-states.png" alt="Aerial operations">
+            <figcaption>Rapid mobile deployments from vehicles to rooftop hubs.</figcaption>
+          </figure>
+          <figure class="car-slide">
+            <img src="assets/tile-health.jpg" alt="Humanitarian corridors">
+            <figcaption>Protecting civilians and humanitarian corridors.</figcaption>
+          </figure>
+        </div>
+
+        <!-- dots get built by JS; each dot has an inner .bar -->
+        <div class="car-dots" role="tablist"></div>
+      </div>
+    </section>
 
     <!-- ===== OPPOSITION ===== -->
     <section id="ops" class="container section">
@@ -199,7 +200,6 @@
       </div>
     </section>
 
-
     <!-- ===== PRINCIPLES ===== -->
     <section id="resources" class="container section">
       <h2 class="xl">Challenging the Old “Defense” Model</h2>
@@ -208,61 +208,61 @@
         <div class="tile"><h3>Evidence That Deters</h3><p>Visual systems to capture and deter war crimes, not to enable them.</p></div>
         <div class="tile"><h3>Scale Protection, Not Power</h3><p>Scalable human protection, not global force projection.</p></div>
       </div>
-<section id="model" class="container section">
-      <div class="stage">
+
+      <!-- ===== 3D MODEL STAGE ===== -->
+      <section id="model" class="container section">
+        <div class="stage">
+          <div class="stage__head">
+            <p class="eyebrow">3D System View</p>
+            <h2 class="xl">Edge Module Preview</h2>
+            <p class="muted">Interact with the drone model — zoom, rotate, and pan.</p>
+          </div>
+
+          <figure class="stage__media media-16x9" style="position:relative;">
+            <div class="drone-ui">
+              <label class="drone-selector">
+                <span>Currently viewing:</span>
+                <select id="droneSelect">
+                  <option value="drone1.glb" selected>Al-Warda</option>
+                  <option value="drone2.glb">Al-Miraj</option>
+                </select>
+              </label>
+            </div>
+            <canvas id="droneCanvas"></canvas>
+          </figure>
+        </div>
+      </section>
+    </section>
+
+    <!-- ===== ETHICS ===== -->
+    <section id="ethics" class="container section">
+      <h2 class="xl">Accountability by Design. Justice by Code.</h2>
+      <p class="lead">Buraq AI empowers civilians, not armies—capturing war crimes and predicting atrocities where traditional defense fails.</p>
+      <ul class="chips">
+        <li>AI-driven</li><li>Non-Lethal defense</li><li>Conflict monitoring</li><li>Ethical surveillance</li>
+      </ul>
+
+      <!-- SECOND 3D VIEWER -->
+      <div class="stage" style="margin-top:20px;">
         <div class="stage__head">
           <p class="eyebrow">3D System View</p>
           <h2 class="xl">Edge Module Preview</h2>
-          <p class="muted">Interact with the drone model — zoom, rotate, and pan.</p>
+          <p class="muted">Interact with the module — zoom, rotate, and pan.</p>
         </div>
 
         <figure class="stage__media media-16x9" style="position:relative;">
           <div class="drone-ui">
             <label class="drone-selector">
               <span>Currently viewing:</span>
-              <select id="droneSelect">
-                <option value="drone1.glb" selected>Al-Warda</option>
-                <option value="drone2.glb">Al-Miraj</option>
+              <select id="moduleSelect">
+                <option value="modulerepresentation.glb" selected>Module Representation</option>
               </select>
             </label>
           </div>
-          <canvas id="droneCanvas"></canvas>
+          <canvas id="moduleCanvas"></canvas>
         </figure>
       </div>
     </section>
-    
-    <!-- ===== ETHICS ===== -->
-<section id="ethics" class="container section">
-  <h2 class="xl">Accountability by Design. Justice by Code.</h2>
-  <p class="lead">Buraq AI empowers civilians, not armies—capturing war crimes and predicting atrocities where traditional defense fails.</p>
-  <ul class="chips">
-    <li>AI-driven</li><li>Non-Lethal defense</li><li>Conflict monitoring</li><li>Ethical surveillance</li>
-  </ul>
-
-  
-
-  <!-- SECOND 3D VIEWER (matches drone viewer 1:1) -->
-  <div class="stage" style="margin-top:20px;">
-    <div class="stage__head">
-      <p class="eyebrow">3D System View</p>
-      <h2 class="xl">Edge Module Preview</h2>
-      <p class="muted">Interact with the module — zoom, rotate, and pan.</p>
-    </div>
-
-    <figure class="stage__media media-16x9" style="position:relative;">
-      <div class="drone-ui">
-        <label class="drone-selector">
-          <span>Currently viewing:</span>
-          <select id="moduleSelect">
-            <option value="modulerepresentation.glb" selected>Module Representation</option>
-          </select>
-        </label>
-      </div>
-      <canvas id="moduleCanvas"></canvas>
-    </figure>
-  </div>
-</section>
-
 
     <!-- ===== GALLERY ===== -->
     <section id="gallery" class="container section">

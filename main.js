@@ -1,11 +1,11 @@
 /* main.js (module)
    - Hero text gate-in
    - Sticky nav frosting past hero
-   - Overview carousel
+   - Overview carousel (single timeline, silky progress)
    - OPS auto-scrolling carousel (no arrows)
    - Panels (search/menu)
    - Form niceties
-   - 3D Drone Viewer (Three.js with zoom limits)
+   - 3D Drone Viewer + Module Viewer (Three.js)
 */
 
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
@@ -48,71 +48,92 @@ function setupSmoothAnchors(){
   });
 }
 
-/* ===== Simple carousel (Overview) ===== */
-/* ===== Overview carousel — Apple-style with long progress bar ===== */
+/* ===== Overview carousel — single timeline progress ===== */
 function setupCarousel() {
   const carousels = $$('.carousel');
   carousels.forEach(carousel => {
     const track = $('.car-track', carousel);
-    if (!track) return;
-
-    const slides   = $$('.car-slide', track);
     const dotsWrap = $('.car-dots', carousel);
-    const autoplay = carousel.dataset.autoplay === 'true';
+    if (!track || !dotsWrap) return;
 
-    // NEW: read interval & expose to CSS for the smooth transform animation
+    const slides = $$('.car-slide', track);
     const interval = parseInt(carousel.dataset.interval, 10) || 5200;
-    carousel.style.setProperty('--car-interval', `${interval}ms`);
 
-    let i = slides.findIndex(s => s.classList.contains('is-active'));
-    if (i < 0) i = 0;
-
+    // Create dots with inner .bar for WAAPI animation
     const dots = slides.map((_, idx) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.setAttribute('aria-label', `Go to slide ${idx+1}`);
-      if (idx === i) b.classList.add('is-active');
-      b.addEventListener('click', () => go(idx));
-      dotsWrap.appendChild(b);
-      return b;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'car-dot';
+      btn.setAttribute('role','tab');
+      btn.setAttribute('aria-label', `Go to slide ${idx+1}`);
+      const bar = document.createElement('span');
+      bar.className = 'bar';
+      btn.appendChild(bar);
+      dotsWrap.appendChild(btn);
+      btn.addEventListener('click', () => go(idx, true));
+      return { btn, bar };
     });
 
-    function setActive(newIndex){
+    let i = Math.max(0, slides.findIndex(s => s.classList.contains('is-active')));
+    let anim = null;
+    let token = 0;
+
+    function setActive(n){
       slides.forEach(s => s.classList.remove('is-active'));
-      dots.forEach(d => d.classList.remove('is-active'));
-
-      slides[newIndex].classList.add('is-active');
-
-      // NEW: force the progress animation to restart cleanly on the new dot
-      const d = dots[newIndex];
-      d.classList.remove('is-active');
-      // reflow tick to reset animation timeline
-      // eslint-disable-next-line no-unused-expressions
-      d.offsetWidth;
-      d.classList.add('is-active');
+      dots.forEach(({btn, bar}) => {
+        btn.classList.remove('is-active');
+        // reset without anim
+        bar.style.transform = 'scaleX(0)';
+      });
+      slides[n].classList.add('is-active');
+      dots[n].btn.classList.add('is-active');
     }
 
-    function go(n) {
+    function playBar(n){
+      if (anim) { anim.cancel(); anim = null; }
+      const thisToken = ++token;
+
+      const bar = dots[n].bar;
+      bar.style.transformOrigin = 'left center';
+      bar.style.willChange = 'transform';
+      bar.style.backfaceVisibility = 'hidden';
+
+      anim = bar.animate(
+        [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
+        {
+          duration: interval,
+          easing: 'linear',      // keep it Apple-like; change to cubic if you want
+          fill: 'forwards',
+          composite: 'replace'
+        }
+      );
+
+      anim.finished.then(() => {
+        if (thisToken !== token) return; // ignore stale finish
+        next();
+      }).catch(()=>{ /* animation cancelled */ });
+    }
+
+    function go(n, manual=false){
       i = (n + slides.length) % slides.length;
       setActive(i);
+      playBar(i);
     }
 
-    function nextSlide(){ go(i+1); }
+    function next(){ go(i + 1); }
 
-    // autoplay using the same interval as the CSS animation
-    let t;
-    function start(){ if (autoplay){ stop(); t = setInterval(nextSlide, interval); } }
-    function stop(){ if (t) clearInterval(t); }
-
-    track.addEventListener('mouseenter', stop);
-    track.addEventListener('mouseleave', start);
-
-    // ensure initial state uses the smooth progress
+    // init
+    if (i < 0) i = 0;
     setActive(i);
-    start();
+    playBar(i);
+
+    // If tab visibility changes, restart the current bar to avoid "stuck" visuals
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) go(i);
+      else if (anim) anim.pause();
+    });
   });
 }
-
 
 /* ===== OPS continuous auto-scroll (no arrows) ===== */
 function setupOpsCarousel() {
@@ -122,50 +143,34 @@ function setupOpsCarousel() {
   const viewport = wrap.querySelector('.ops-viewport');
   const track = wrap.querySelector('.ops-track');
 
-  // Clone both ends for seamless loop
   const originals = Array.from(track.children);
   originals.forEach(card => track.appendChild(card.cloneNode(true)));
   originals.forEach(card => track.insertBefore(card.cloneNode(true), track.firstChild));
 
   const allCards = Array.from(track.children);
   const gap = parseFloat(getComputedStyle(track).gap) || 16;
-
-  // speed = ms per card (keeps your data-speed behavior)
   const msPerCard = parseInt(wrap.dataset.speed, 10) || 2800;
 
   let cardW = allCards[0].getBoundingClientRect().width + gap;
-  let index = originals.length; // start centered on originals
-  let posX  = -index * cardW;   // live pixel position
+  let index = originals.length;
+  let posX  = -index * cardW;
   let running = true;
 
-  // Calculate pixels/second based on current card width
   const velocity = () => cardW / (msPerCard / 600);
-
   const setX = (x) => { track.style.transition = 'none'; track.style.transform = `translateX(${x}px)`; };
   setX(posX);
 
-  // Hover to pause
-  const stop  = () => running = false;
-  const start = () => running = true;
-  [viewport].forEach(el => {
-    el.addEventListener('mouseenter', stop);
-    el.addEventListener('mouseleave', start);
-  });
+  viewport.addEventListener('mouseenter', () => running = false);
+  viewport.addEventListener('mouseleave', () => running = true);
 
-  // RAF loop for buttery continuous motion
   let last = performance.now();
   function loop(now){
     const dt = now - last; last = now;
     if (running){
       posX -= velocity() * (dt / 1000);
-
-      // How many whole cards have we advanced since last normalize?
       const cardsAdvanced = Math.floor((-posX / cardW) - index);
-      if (cardsAdvanced > 0){
-        index += cardsAdvanced;
-      }
+      if (cardsAdvanced > 0) index += cardsAdvanced;
 
-      // Keep the index inside the middle block
       if (index >= originals.length * 2) {
         index -= originals.length;
         posX += originals.length * cardW;
@@ -173,19 +178,17 @@ function setupOpsCarousel() {
         index += originals.length;
         posX -= originals.length * cardW;
       }
-
       setX(posX);
     }
     requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);
 
-  // Keep motion consistent on resize
   window.addEventListener('resize', () => {
     const oldCardW = cardW;
     cardW = allCards[0].getBoundingClientRect().width + gap;
-    const frac = -posX / oldCardW;       // how many card-widths from origin
-    posX = -frac * cardW;                // same fractional position with new width
+    const frac = -posX / oldCardW;
+    posX = -frac * cardW;
     setX(posX);
   });
 }
@@ -245,15 +248,15 @@ function setupPanels() {
     if (e.key === 'Escape') { close(searchPanel); close(menuPanel); }
   });
 
-  // Inline nav search slot (optional)
+  // Inline nav search slot
   const navSlot = document.querySelector('.nav-inline-search');
   const inlineInput = document.getElementById('navSearch');
   btnSearch?.addEventListener('click', (e) => {
     if (!navSlot || !inlineInput) return;
     e.preventDefault();
-    const open = navSlot.classList.toggle('is-open');
-    btnSearch.setAttribute('aria-expanded', String(open));
-    if (open) setTimeout(() => inlineInput.focus(), 150);
+    const opened = navSlot.classList.toggle('is-open');
+    btnSearch.setAttribute('aria-expanded', String(opened));
+    if (opened) setTimeout(() => inlineInput.focus(), 150);
   });
   document.addEventListener('click', (e) => {
     if (!navSlot?.classList.contains('is-open')) return;
@@ -302,7 +305,6 @@ function initDrone() {
   dirLight.position.set(5, 10, 7.5);
   scene.add(dirLight);
 
-  // Controls
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
@@ -353,8 +355,6 @@ function initDrone() {
         controls.minDistance = size / 3.7;
         controls.maxDistance = size * 0.5;
         controls.update();
-
-        console.log(`✅ Loaded ${file}`);
       },
       (xhr) => console.log(`Loading ${file}: ${((xhr.loaded / (xhr.total || 1)) * 100).toFixed(0)}%`),
       (err) => console.error(`❌ Error loading ${file}`, err)
@@ -387,25 +387,18 @@ function initModule() {
   const canvas = document.getElementById('moduleCanvas');
   if (!canvas) return;
 
-  // Scene / Camera / Renderer
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    60,
-    canvas.clientWidth / canvas.clientHeight,
-    0.1,
-    5000
-  );
+  const camera = new THREE.PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 5000);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-  // Lights (same as drone)
+  // Lights (same as drone, slightly softer)
   scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1));
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 2);
   dirLight.position.set(5, 10, 7.5);
   scene.add(dirLight);
 
-  // Controls (same limits/settings)
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
@@ -428,7 +421,6 @@ function initModule() {
   }
 
   function loadModule(file) {
-    // Remove previous model cleanly
     if (currentModelGroup) {
       scene.remove(currentModelGroup);
       disposeGroup(currentModelGroup);
@@ -444,7 +436,6 @@ function initModule() {
         scene.add(group);
         currentModelGroup = group;
 
-        // Center + frame (identical logic to the drone viewer)
         const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3()).length();
         const center = box.getCenter(new THREE.Vector3());
@@ -453,40 +444,33 @@ function initModule() {
         const sphere = box.getBoundingSphere(new THREE.Sphere());
         const fitRadius = sphere.radius;
         const fov = camera.fov * (Math.PI / 180);
-        const fitDist = (fitRadius / Math.sin(fov / 2)) * 1.2; // 20% margin
+        const fitDist = (fitRadius / Math.sin(fov / 2)) * 1.2;
 
         camera.near = fitDist / 100;
         camera.far  = fitDist * 100;
         camera.updateProjectionMatrix();
 
-        camera.position.set(fitDist * 0.6, fitDist * 0.1234, fitDist * 10);
+        camera.position.set(fitDist * 0.6, fitDist * 0.1234, fitDist * 1);
         controls.target.set(0, 0, 0);
 
-        // Zoom limits relative to model size
         controls.minDistance = size / 3.7;
         controls.maxDistance = size * 0.8;
         controls.update();
-
-        console.log(`✅ Loaded ${file} (module viewer)`);
       },
       (xhr) => console.log(`Loading ${file}: ${((xhr.loaded / (xhr.total || 1)) * 100).toFixed(0)}%`),
       (err) => console.error(`❌ Error loading ${file}`, err)
     );
   }
 
-  // Default file: modulerepresentation.glb
   const select = document.getElementById('moduleSelect');
   if (select) {
-    // Ensure the select value points to the correct file
     if (!select.value) select.value = 'modulerepresentation.glb';
     loadModule(select.value);
     select.addEventListener('change', () => loadModule(select.value));
   } else {
-    // Fallback: load directly if select isn't found
     loadModule('modulerepresentation.glb');
   }
 
-  // Resize handling
   window.addEventListener('resize', () => {
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
@@ -495,7 +479,6 @@ function initModule() {
     renderer.setSize(w, h);
   });
 
-  // Render loop
   (function animate(){
     requestAnimationFrame(animate);
     controls.update();
@@ -503,14 +486,13 @@ function initModule() {
   })();
 }
 
-
 /* ===== Init ===== */
 window.addEventListener('DOMContentLoaded', () => {
   gateHero();
   setupFrostNav();
   setupSmoothAnchors();
-  setupCarousel();
-  setupOpsCarousel();   // now continuous and arrow-free
+  setupCarousel();      // ✨ rebuilt
+  setupOpsCarousel();   // continuous, arrow-free
   setupPanels();
   setupForm();
   initDrone();
