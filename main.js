@@ -4,8 +4,8 @@
    - Overview carousel (single timeline, silky progress)
    - OPS auto-scrolling carousel (no arrows)
    - Panels (search/menu)
-   - Form niceties
-   - 3D Drone Viewer (Three.js)  ← module viewer removed
+   - Form: HTML5 validity + reCAPTCHA + saveInquiry()
+   - 3D Drone Viewer (Three.js)
 */
 
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
@@ -99,12 +99,7 @@ function setupCarousel() {
 
       anim = bar.animate(
         [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
-        {
-          duration: interval,
-          easing: 'linear',
-          fill: 'forwards',
-          composite: 'replace'
-        }
+        { duration: interval, easing: 'linear', fill: 'forwards', composite: 'replace' }
       );
 
       anim.finished.then(() => {
@@ -113,7 +108,7 @@ function setupCarousel() {
       }).catch(()=>{ /* animation cancelled */ });
     }
 
-    function go(n, manual=false){
+    function go(n){
       i = (n + slides.length) % slides.length;
       setActive(i);
       playBar(i);
@@ -271,13 +266,7 @@ function setupPanels() {
   });
 }
 
-/* ===== Form basics ===== */
-/* ===== Form: native validity + reCAPTCHA + Firestore write ===== */
-import { getApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import {
-  getFirestore, collection, addDoc, serverTimestamp
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
+/* ===== Form: HTML5 validity + reCAPTCHA + global saveInquiry() ===== */
 function setupForm() {
   const yr = $('#yr');
   if (yr) yr.textContent = new Date().getFullYear();
@@ -292,8 +281,11 @@ function setupForm() {
     msg.style.color = ok ? '#176d2a' : '#b00020';
   };
 
+  let busy = false;
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (busy) return;
 
     // 1) HTML5 validity (works even with novalidate)
     if (!form.checkValidity()) {
@@ -305,7 +297,6 @@ function setupForm() {
     const token = window.grecaptcha?.getResponse?.();
     if (!token) {
       setMsg('Please complete the reCAPTCHA.');
-      // optional: scroll into view
       document.querySelector('.g-recaptcha')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -320,25 +311,35 @@ function setupForm() {
       title:     fd.get('title')?.trim() || '',
       country:   fd.get('country')?.trim() || '',
       notes:     fd.get('notes')?.trim() || '',
-      recaptchaToken: token,
-      createdAt: serverTimestamp(),
-      userAgent: navigator.userAgent
+      recaptchaToken: token
     };
 
+    // 4) Submit via global saveInquiry(app v10.12.2 in firebase-init.js)
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const prevLabel = submitBtn?.textContent;
+    submitBtn && (submitBtn.disabled = true, submitBtn.textContent = 'Submitting…');
+    busy = true;
     setMsg('Submitting…', true);
 
     try {
-      // 4) Write to Firestore (client-side). You can swap this for a Cloud Function if you want server-side reCAPTCHA verification.
-      const app = getApp();                     // ensure firebase-init.js ran
-      const db  = getFirestore(app);
-      await addDoc(collection(db, 'inquiries'), payload);
+      if (typeof window.saveInquiry !== 'function') {
+        throw new Error('firebase-init.js not loaded or saveInquiry() missing');
+      }
+      const res = await window.saveInquiry(payload);
+      if (!res?.ok) throw new Error(res?.error || 'Save failed');
 
       setMsg('Thanks — we’ll get back to you shortly.', true);
       form.reset();
       window.grecaptcha?.reset?.();
     } catch (err) {
-      console.error('Firestore error:', err);
+      console.error('Submit error:', err);
       setMsg('Something went wrong submitting your inquiry. Please try again.');
+    } finally {
+      busy = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = prevLabel || 'Submit inquiry';
+      }
     }
   }, false);
 }
@@ -351,16 +352,11 @@ function setupPinReveal() {
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        // Add class to trigger CSS transitions
         entry.target.classList.add('is-in');
-
-        // Optional: ensure stagger works even if CSS delays are overridden
         const pins = entry.target.querySelectorAll('.pin');
         pins.forEach((pin, idx) => {
           pin.style.transitionDelay = `${idx * 120}ms`;
         });
-
-        // Only need to reveal once
         io.unobserve(entry.target);
       }
     });
@@ -402,8 +398,8 @@ function initDrone() {
       currentModelGroup.traverse(obj => {
         if (obj.geometry) obj.geometry.dispose();
         if (obj.material) {
-          if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
-          else obj.material.dispose();
+          if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose && m.dispose());
+          else obj.material.dispose && obj.material.dispose();
         }
       });
     }
@@ -473,5 +469,5 @@ window.addEventListener('DOMContentLoaded', () => {
   setupPanels();
   setupForm();
   initDrone();        // still active
-  setupPinReveal();  
+  setupPinReveal();
 });
