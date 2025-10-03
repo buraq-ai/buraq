@@ -242,27 +242,60 @@
         <li>AI-driven</li><li>Non-Lethal defense</li><li>Conflict monitoring</li><li>Ethical surveillance</li>
       </ul>
 
-      <!-- SECOND 3D VIEWER -->
-      <div class="stage" style="margin-top:20px;">
-        <div class="stage__head">
-          <p class="eyebrow">3D System View</p>
-          <h2 class="xl">Edge Module Preview</h2>
-          <p class="muted">Interact with the module — zoom, rotate, and pan.</p>
-        </div>
+      <!-- MODULE IMAGE (static, with scroll-reveal pins) -->
+<div class="stage" style="margin-top:20px;">
+  <div class="stage__head">
+    <p class="eyebrow">System Snapshot</p>
+    <h2 class="xl">Edge Module — Image Preview</h2>
+    <p class="muted">Exploded view with labeled parts.</p>
+  </div>
 
-        <figure class="stage__media media-16x9" style="position:relative;">
-          <div class="drone-ui">
-            <label class="drone-selector">
-              <span>Currently viewing:</span>
-              <select id="moduleSelect">
-                <option value="modulerepresentation.glb" selected>Module Representation</option>
-              </select>
-            </label>
-          </div>
-          <canvas id="moduleCanvas"></canvas>
-        </figure>
-      </div>
-    </section>
+  <figure class="stage__media media-16x9">
+    <div class="annotated" id="moduleImage">
+      <img
+        src="assets/modelrepresentation.png"
+        alt="Exploded view: case cover, AI hat, Raspberry Pi, physical case"
+        loading="lazy"
+        decoding="async"
+      />
+
+      <ol class="pins" aria-label="Module parts">
+    <ol class="pins" aria-label="Module parts">
+    <!-- Case cover — move whole group to the RIGHT -->
+    <li class="pin"
+        style="--x:65%; --y:12%; --i:0; --offset: 90px"
+        data-side="right">
+      <span class="pin__dot" aria-hidden="true"></span>
+      <span class="pin__label">Case cover</span>
+    </li>
+
+    <!-- AI hat — move whole group to the LEFT -->
+    <li class="pin"
+        style="--x:30%; --y:34%; --i:1; --offset: 110px"
+        data-side="left">
+      <span class="pin__dot" aria-hidden="true"></span>
+      <span class="pin__label">AI hat</span>
+    </li>
+
+    <!-- Raspberry Pi — move whole group to the RIGHT -->
+    <li class="pin"
+        style="--x:65%; --y:57%; --i:2; --offset: 90px"
+        data-side="right">
+      <span class="pin__dot" aria-hidden="true"></span>
+      <span class="pin__label">Raspberry&nbsp;Pi</span>
+    </li>
+
+    <!-- Physical case — move whole group to the LEFT -->
+    <li class="pin"
+        style="--x:30%; --y:82%; --i:3; --offset: 110px"
+        data-side="left">
+      <span class="pin__dot" aria-hidden="true"></span>
+      <span class="pin__label">Physical case</span>
+    </li>
+  </ol>
+    </div>
+  </figure>
+</div>
 
     <!-- ===== GALLERY ===== -->
     <section id="gallery" class="container section">
@@ -315,8 +348,7 @@
     </section>
 
     <!-- ===== CONTACT ===== -->
-    <section id="contact" class="slab">
-      <div class="container section">
+    <section id="contact" class="container section">
         <h2 class="xl">Connect With Us</h2>
         <p class="lead">Contact our team to discuss deployments, partnerships, or access requests.</p>
 
