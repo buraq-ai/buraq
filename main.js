@@ -272,18 +272,77 @@ function setupPanels() {
 }
 
 /* ===== Form basics ===== */
+/* ===== Form: native validity + reCAPTCHA + Firestore write ===== */
+import { getApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import {
+  getFirestore, collection, addDoc, serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
 function setupForm() {
   const yr = $('#yr');
   if (yr) yr.textContent = new Date().getFullYear();
 
   const form = $('#inqForm');
-  const msg = $('#formMsg');
+  const msg  = $('#formMsg');
   if (!form) return;
-  form.addEventListener('submit', (e) => {
+
+  const setMsg = (text, ok=false) => {
+    if (!msg) return;
+    msg.textContent = text;
+    msg.style.color = ok ? '#176d2a' : '#b00020';
+  };
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    msg.textContent = 'Thanks — we’ll get back to you shortly.';
+
+    // 1) HTML5 validity (works even with novalidate)
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    // 2) reCAPTCHA presence
+    const token = window.grecaptcha?.getResponse?.();
+    if (!token) {
+      setMsg('Please complete the reCAPTCHA.');
+      // optional: scroll into view
+      document.querySelector('.g-recaptcha')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // 3) Gather data
+    const fd = new FormData(form);
+    const payload = {
+      firstName: fd.get('firstName')?.trim() || '',
+      lastName:  fd.get('lastName')?.trim() || '',
+      email:     fd.get('email')?.trim() || '',
+      org:       fd.get('org')?.trim() || '',
+      title:     fd.get('title')?.trim() || '',
+      country:   fd.get('country')?.trim() || '',
+      notes:     fd.get('notes')?.trim() || '',
+      recaptchaToken: token,
+      createdAt: serverTimestamp(),
+      userAgent: navigator.userAgent
+    };
+
+    setMsg('Submitting…', true);
+
+    try {
+      // 4) Write to Firestore (client-side). You can swap this for a Cloud Function if you want server-side reCAPTCHA verification.
+      const app = getApp();                     // ensure firebase-init.js ran
+      const db  = getFirestore(app);
+      await addDoc(collection(db, 'inquiries'), payload);
+
+      setMsg('Thanks — we’ll get back to you shortly.', true);
+      form.reset();
+      window.grecaptcha?.reset?.();
+    } catch (err) {
+      console.error('Firestore error:', err);
+      setMsg('Something went wrong submitting your inquiry. Please try again.');
+    }
   }, false);
 }
+
 /* ===== Annotated image: reveal pins on scroll ===== */
 function setupPinReveal() {
   const targets = document.querySelectorAll('.annotated');
